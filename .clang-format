@@ -1,0 +1,79 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+AccessModifierOffset: -4
+AlignAfterOpenBracket: BlockIndent
+AlignConsecutiveAssignments:
+  AlignCompound: true
+  AcrossComments: false
+  AcrossEmptyLines: false
+  Enabled: true
+AlignConsecutiveDeclarations:
+  Enabled: false
+AlignEscapedNewlines: Left
+AlignOperands: Align
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 2
+AllowShortBlocksOnASingleLine: Always
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortEnumsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: true
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: false
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: true
+  BeforeWhile: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+BreakAfterReturnType: Automatic
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeBraces: Custom
+BreakConstructorInitializers: BeforeComma
+BreakInheritanceList: AfterColon
+BreakTemplateDeclarations: Yes
+ColumnLimit: 120
+Cpp11BracedListStyle: true
+IncludeCategories:
+  - Regex: '^"CoreMinimal.h"$'
+    Priority: 0
+  - Regex: '".*\.generated\.h"$'
+    Priority: 2
+  - Regex: '.*'
+    Priority: 1
+IncludeIsMainRegex: '([-_](test|unittest))?$'
+IndentCaseBlocks: true
+IndentWidth: 4
+InsertNewlineAtEOF: true
+MacroBlockBegin: ''
+MacroBlockEnd: ''
+MaxEmptyLinesToKeep: 2
+PackConstructorInitializers: CurrentLine
+# PenaltyBreakOpenParenthesis: 1
+# PenaltyReturnTypeOnItsOwnLine: 100
+PointerAlignment: Left
+ReferenceAlignment: Left
+SortIncludes: CaseInsensitive
+SpacesInParens: Never
+SpacesInAngles: Never
+StatementMacros:
+  - UPROPERTY
+  - UFUNCTION
+  - UCLASS
+  - USTRUCT
+  - UENUM
+  - UINTERFACE
+  - GENERATED_BODY
+TabWidth: 4
+...
