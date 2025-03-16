@@ -20,13 +20,13 @@ class INKLAB_API UInventorySlotWidgetBase : public UUserWidget
 
 public:
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-    UImage* ItemIcon;
+    TObjectPtr<UImage> ItemIcon;
 
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-    UTextBlock* ItemCount;
+    TObjectPtr<UTextBlock> ItemCount;
 
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-    UButton* SlotButton;
+    TObjectPtr<UButton> SlotButton;
 
     UPROPERTY(BlueprintReadOnly, Category = "Inventory")
     UInventoryComponent* InventoryRef;

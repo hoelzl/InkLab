@@ -19,7 +19,7 @@ public:
     virtual void OnInteract(UInteractionSourceComponent* Source) override;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
-    UInventoryItemBase* ItemToPickup = nullptr;
+    TObjectPtr<UInventoryItemBase> ItemToPickup = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
     int32 ItemCount = 1;

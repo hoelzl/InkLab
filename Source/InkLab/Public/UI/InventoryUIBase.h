@@ -17,10 +17,10 @@ class INKLAB_API UInventoryUIBase : public UUserWidget
 
 public:
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-    UWrapBox* InventorySlotsContainer;
+    TObjectPtr<UWrapBox> InventorySlotsContainer;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
-    UInventoryComponent* InventoryComponent;
+    TObjectPtr<UInventoryComponent> InventoryComponent;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
     TSubclassOf<UInventorySlotWidgetBase> SlotWidgetClass;

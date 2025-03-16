@@ -32,7 +32,7 @@ public:
     FText Description;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
-    UTexture2D* Icon;
+    TObjectPtr<UTexture2D> Icon;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
     EItemType ItemType;

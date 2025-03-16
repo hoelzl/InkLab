@@ -19,7 +19,7 @@ public:
     virtual void OnInteract(UInteractionSourceComponent* Source) override;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Merchant")
-    UInventoryComponent* MerchantInventory;
+    TObjectPtr<UInventoryComponent> MerchantInventory;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Merchant")
     TSubclassOf<UUserWidget> MerchantUIClass;
@@ -46,5 +46,5 @@ protected:
     virtual void BeginPlay() override;
 
     UPROPERTY()
-    UUserWidget* CurrentMerchantUI;
+    TObjectPtr<UUserWidget> CurrentMerchantUI;
 };
