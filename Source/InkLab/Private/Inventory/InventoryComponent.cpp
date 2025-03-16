@@ -2,7 +2,10 @@
 
 #include "Inventory/InventoryComponent.h"
 
-UInventoryComponent::UInventoryComponent() { PrimaryComponentTick.bCanEverTick = false; }
+UInventoryComponent::UInventoryComponent(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
+{
+    PrimaryComponentTick.bCanEverTick = false;
+}
 
 void UInventoryComponent::BeginPlay()
 {

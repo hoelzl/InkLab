@@ -19,6 +19,8 @@ class INKLAB_API UInventorySlotWidgetBase : public UUserWidget
     GENERATED_BODY()
 
 public:
+    explicit UInventorySlotWidgetBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
     TObjectPtr<UImage> ItemIcon;
 
@@ -29,10 +31,10 @@ public:
     TObjectPtr<UButton> SlotButton;
 
     UPROPERTY(BlueprintReadOnly, Category = "Inventory")
-    UInventoryComponent* InventoryRef;
+    TObjectPtr<UInventoryComponent> InventoryRef;
 
     UPROPERTY(BlueprintReadOnly, Category = "Inventory")
-    int32 SlotIndex;
+    int32 SlotIndex{0};
 
     UPROPERTY(BlueprintReadOnly, Category = "Inventory")
     FInventorySlot CurrentSlot;

@@ -5,7 +5,7 @@
 #include "Components/TextBlock.h"
 
 UInteractionPromptWidget::UInteractionPromptWidget(const FObjectInitializer& ObjectInitializer)
-    : Super(ObjectInitializer)
+    : Super{ObjectInitializer}
 {
     CurrentActionText = FText::FromString("interact");
 }

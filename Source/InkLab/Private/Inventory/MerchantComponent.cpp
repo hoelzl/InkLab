@@ -5,7 +5,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 
-UMerchantComponent::UMerchantComponent()
+UMerchantComponent::UMerchantComponent(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
 {
     InteractionPrompt = NSLOCTEXT("Interaction", "MerchantPrompt", "Trade");
 

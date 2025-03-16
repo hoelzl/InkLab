@@ -21,7 +21,7 @@ class INKLAB_API UGameHUD : public UUserWidget
     GENERATED_BODY()
 
 public:
-    explicit UGameHUD(const FObjectInitializer& ObjectInitializer);
+    explicit UGameHUD(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     virtual void NativeConstruct() override;
     virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;

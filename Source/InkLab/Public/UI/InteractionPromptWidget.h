@@ -18,7 +18,7 @@ class INKLAB_API UInteractionPromptWidget : public UUserWidget
     GENERATED_BODY()
 
 public:
-    explicit UInteractionPromptWidget(const FObjectInitializer& ObjectInitializer);
+    explicit UInteractionPromptWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     virtual void NativeConstruct() override;
 

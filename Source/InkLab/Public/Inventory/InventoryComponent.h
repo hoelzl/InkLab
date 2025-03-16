@@ -27,7 +27,7 @@ class INKLAB_API UInventoryComponent : public UActorComponent
     GENERATED_BODY()
 
 public:
-    UInventoryComponent();
+    explicit UInventoryComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     UPROPERTY(BlueprintAssignable, Category = "Inventory")
     FOnInventoryUpdated OnInventoryUpdated;

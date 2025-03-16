@@ -11,9 +11,11 @@ static TAutoConsoleVariable<int32> CVarDebugInteractionSource(
     TEXT("debug.InteractionSource"), 0, TEXT("Show a debug line for the trace towards interaction targets.")
 );
 
-UInteractionSourceComponent::UInteractionSourceComponent() { PrimaryComponentTick.bCanEverTick = true; }
-
-void UInteractionSourceComponent::BeginPlay() { Super::BeginPlay(); }
+UInteractionSourceComponent::UInteractionSourceComponent(const FObjectInitializer& ObjectInitializer)
+    : Super{ObjectInitializer}
+{
+    PrimaryComponentTick.bCanEverTick = true;
+}
 
 void UInteractionSourceComponent::TickComponent(
     float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction
@@ -23,42 +25,16 @@ void UInteractionSourceComponent::TickComponent(
     PerformInteractionTrace();
 }
 
-TPair<FVector, FVector> UInteractionSourceComponent::ComputeInteractionTraceEndpoints(const APlayerController& PC) const
+void UInteractionSourceComponent::TriggerInteraction()
 {
-    // Get viewport size
-    int32 ViewportSizeX, ViewportSizeY;
-    PC.GetViewportSize(ViewportSizeX, ViewportSizeY);
-
-    // Get screen center
-    // ReSharper disable CppTooWideScopeInitStatement
-    FVector WorldLocation, WorldDirection;
-    // ReSharper restore CppTooWideScopeInitStatement
-
-    // Convert screen center to world position and direction
-    if (PC.DeprojectScreenPositionToWorld(
-            ViewportSizeX * AimReticleXPositionMultiplier, ViewportSizeY * AimReticleYPositionMultiplier, WorldLocation,
-            WorldDirection
-        ))
+    OnInteractionTriggered.Broadcast(CurrentTarget);
+    if (CurrentTarget)
     {
-        FVector TraceStart = WorldLocation;
-        FVector TraceEnd   = TraceStart + (WorldDirection * InteractionDistance);
-        return {TraceStart, TraceEnd};
+        CurrentTarget->OnInteract(this);
     }
-
-    GEngine->AddOnScreenDebugMessage(
-        123, 5.0f, FColor::Red,
-        "UInteractionSourceComponent::ComputeInteractionTraceEndpoints could not deproject screen position. "
-        "Using fallback."
-    );
-    // Fallback to your original method if deprojection fails
-    FVector EyeLocation;
-    FRotator EyeRotation;
-    PC.GetPlayerViewPoint(EyeLocation, EyeRotation);
-    FVector TraceStart = EyeLocation;
-    FVector TraceEnd   = TraceStart + (EyeRotation.Vector() * InteractionDistance);
-    return {TraceStart, TraceEnd};
 }
 
+void UInteractionSourceComponent::BeginPlay() { Super::BeginPlay(); }
 
 void UInteractionSourceComponent::PerformInteractionTrace()
 {
@@ -119,26 +95,54 @@ void UInteractionSourceComponent::PerformInteractionTrace()
 
     if (NewTarget != CurrentTarget)
     {
-        if (const auto CurrentTargetPtr = CurrentTarget.Get())
+        if (CurrentTarget)
         {
-            CurrentTargetPtr->OnEndFocus();
+            CurrentTarget->OnEndFocus();
             OnInteractionTargetLost.Broadcast();
         }
 
         CurrentTarget = NewTarget;
 
-        if (const auto CurrentTargetPtr = CurrentTarget.Get())
+        if (CurrentTarget)
         {
-            CurrentTargetPtr->OnBeginFocus(this);
-            OnInteractionTargetFound.Broadcast(CurrentTargetPtr);
+            CurrentTarget->OnBeginFocus(this);
+            OnInteractionTargetFound.Broadcast(CurrentTarget);
         }
     }
 }
 
-void UInteractionSourceComponent::TriggerInteraction()
+TPair<FVector, FVector> UInteractionSourceComponent::ComputeInteractionTraceEndpoints(const APlayerController& PC) const
 {
-    if (const auto CurrentTargetPtr = CurrentTarget.Get())
+    // Get viewport size
+    int32 ViewportSizeX, ViewportSizeY;
+    PC.GetViewportSize(ViewportSizeX, ViewportSizeY);
+
+    // Get screen center
+    // ReSharper disable CppTooWideScopeInitStatement
+    FVector WorldLocation, WorldDirection;
+    // ReSharper restore CppTooWideScopeInitStatement
+
+    // Convert screen center to world position and direction
+    if (PC.DeprojectScreenPositionToWorld(
+            ViewportSizeX * AimReticleXPositionMultiplier, ViewportSizeY * AimReticleYPositionMultiplier, WorldLocation,
+            WorldDirection
+        ))
     {
-        CurrentTargetPtr->OnInteract(this);
+        FVector TraceStart = WorldLocation;
+        FVector TraceEnd   = TraceStart + (WorldDirection * InteractionDistance);
+        return {TraceStart, TraceEnd};
     }
+
+    GEngine->AddOnScreenDebugMessage(
+        123, 5.0f, FColor::Red,
+        "UInteractionSourceComponent::ComputeInteractionTraceEndpoints could not deproject screen position. "
+        "Using fallback."
+    );
+    // Fallback to your original method if deprojection fails
+    FVector EyeLocation;
+    FRotator EyeRotation;
+    PC.GetPlayerViewPoint(EyeLocation, EyeRotation);
+    FVector TraceStart = EyeLocation;
+    FVector TraceEnd   = TraceStart + (EyeRotation.Vector() * InteractionDistance);
+    return {TraceStart, TraceEnd};
 }

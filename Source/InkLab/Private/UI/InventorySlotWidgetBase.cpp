@@ -7,6 +7,10 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
+UInventorySlotWidgetBase::UInventorySlotWidgetBase(const FObjectInitializer& ObjectInitializer)
+    : Super{ObjectInitializer}
+{}
+
 void UInventorySlotWidgetBase::NativeConstruct()
 {
     Super::NativeConstruct();

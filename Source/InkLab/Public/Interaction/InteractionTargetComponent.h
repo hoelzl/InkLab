@@ -18,7 +18,7 @@ class INKLAB_API UInteractionTargetComponent : public UActorComponent
     GENERATED_BODY()
 
 public:
-    UInteractionTargetComponent();
+    explicit UInteractionTargetComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     UFUNCTION(BlueprintCallable, Category = "Interaction")
     virtual void OnInteract(UInteractionSourceComponent* Source);

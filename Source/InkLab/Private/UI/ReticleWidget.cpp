@@ -7,7 +7,7 @@
 #include "Components/Image.h"
 #include "InkLab/InkLab.h" // For reticle position constants
 
-UReticleWidget::UReticleWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {}
+UReticleWidget::UReticleWidget(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer} {}
 
 void UReticleWidget::NativeConstruct()
 {

@@ -18,7 +18,7 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 //////////////////////////////////////////////////////////////////////////
 // AInkLabCharacter
 
-AInkLabCharacter::AInkLabCharacter()
+AInkLabCharacter::AInkLabCharacter(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
 {
     // Set size for collision capsule
     GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -100,12 +100,22 @@ void AInkLabCharacter::Look(const FInputActionValue& Value)
     }
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AInkLabCharacter::Interact(const FInputActionValue& Value)
+{
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, "Interacting");
+    if (InteractionSource != nullptr)
+    {
+        InteractionSource->TriggerInteraction();
+    }
+}
+
 void AInkLabCharacter::NotifyControllerChanged()
 {
     Super::NotifyControllerChanged();
 
     // Add Input Mapping Context
-    if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+    if (const APlayerController* PlayerController = Cast<APlayerController>(Controller))
     {
         if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
                 ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -130,6 +140,9 @@ void AInkLabCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
         // Looking
         EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AInkLabCharacter::Look);
+
+        // Interacting
+        EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AInkLabCharacter::Interact);
     }
     else
     {

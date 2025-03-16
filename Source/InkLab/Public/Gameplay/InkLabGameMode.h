@@ -12,5 +12,5 @@ class AInkLabGameMode : public AGameModeBase
     GENERATED_BODY()
 
 public:
-    AInkLabGameMode();
+    explicit AInkLabGameMode(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 };

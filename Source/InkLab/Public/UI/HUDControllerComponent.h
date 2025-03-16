@@ -7,22 +7,32 @@
 #include "HUDControllerComponent.generated.h"
 
 
+class UInteractionTargetComponent;
+class UInventoryComponent;
+class UInteractionSourceComponent;
 class UWidget;
 class UGameHUD;
-
 /**
  * Component that provides an interface for controlling the game HUD
  * Attach this to your player controller or character
  */
-UCLASS(ClassGroup = (UI), meta = (BlueprintSpawnableComponent))
+UCLASS(Blueprintable, BlueprintType, ClassGroup = (UI), meta = (BlueprintSpawnableComponent))
 class INKLAB_API UHUDControllerComponent : public UActorComponent
 {
     GENERATED_BODY()
 
 public:
-    UHUDControllerComponent();
+    explicit UHUDControllerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     virtual void BeginPlay() override;
+
+    // Initialize connections to interaction system
+    UFUNCTION(BlueprintCallable, Category = "HUD|Initialization")
+    void SetupInteractionListeners(UInteractionSourceComponent* InteractionSource);
+
+    // Initialize connections to inventory system
+    UFUNCTION(BlueprintCallable, Category = "HUD|Initialization")
+    void SetupInventoryListeners(UInventoryComponent* InventoryComponent);
 
     // Reference to the created HUD widget
     UPROPERTY(BlueprintReadOnly, Category = "HUD")
@@ -63,4 +73,17 @@ public:
 protected:
     // Creates the HUD widget and adds it to the viewport
     void CreateHUD();
+
+    UFUNCTION()
+    void OnInteractionTargetFound(UInteractionTargetComponent* Target);
+
+    UFUNCTION()
+    void OnInteractionTargetLost();
+
+    virtual void BeginDestroy() override;
+
+    void RemoveInteractionListeners();
+
+    UPROPERTY()
+    TObjectPtr<UInteractionSourceComponent> CurrentInteractionSource;
 };

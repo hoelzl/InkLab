@@ -8,6 +8,7 @@
 
 class UInteractionTargetComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractionTriggered, UInteractionTargetComponent*, Target);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractionTargetFound, UInteractionTargetComponent*, Target);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInteractionTargetLost);
 
@@ -17,16 +18,16 @@ class INKLAB_API UInteractionSourceComponent : public UActorComponent
     GENERATED_BODY()
 
 public:
-    UInteractionSourceComponent();
+    explicit UInteractionSourceComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     virtual void
     TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-    TPair<FVector, FVector>
-    ComputeInteractionTraceEndpoints(const APlayerController& PC) const;
-
     UFUNCTION(BlueprintCallable, Category = "Interaction")
     void TriggerInteraction();
+
+    UPROPERTY(BlueprintAssignable, Category = "Interaction")
+    FOnInteractionTriggered OnInteractionTriggered;
 
     UPROPERTY(BlueprintAssignable, Category = "Interaction")
     FOnInteractionTargetFound OnInteractionTargetFound;
@@ -47,8 +48,11 @@ protected:
     float TraceRadius = 20.0f;
 
     UPROPERTY()
-    TWeakObjectPtr<UInteractionTargetComponent> CurrentTarget = nullptr;
+    TObjectPtr<UInteractionTargetComponent> CurrentTarget = nullptr;
 
     UFUNCTION(BlueprintCallable, Category = "Interaction")
     void PerformInteractionTrace();
+
+    TPair<FVector, FVector>
+    ComputeInteractionTraceEndpoints(const APlayerController& PC) const;
 };

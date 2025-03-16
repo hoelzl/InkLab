@@ -16,6 +16,8 @@ class INKLAB_API UInventoryUIBase : public UUserWidget
     GENERATED_BODY()
 
 public:
+    explicit UInventoryUIBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
     TObjectPtr<UWrapBox> InventorySlotsContainer;
 
@@ -32,10 +34,10 @@ public:
     void RefreshInventory();
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
-    float MaxWeightDisplay;
+    float MaxWeightDisplay{0.f};
 
     UPROPERTY(BlueprintReadOnly, Category = "Inventory")
-    float CurrentWeightDisplay;
+    float CurrentWeightDisplay{0.f};
 
 protected:
     virtual void NativeConstruct() override;

@@ -24,7 +24,7 @@ class AInkLabCharacter : public ACharacter
     GENERATED_BODY()
 
 public:
-    AInkLabCharacter();
+    explicit AInkLabCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     /** Returns CameraBoom subobject **/
     FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
@@ -37,6 +37,9 @@ protected:
 
     /** Called for looking input */
     void Look(const FInputActionValue& Value);
+
+    /** Called for interaction input */
+    void Interact(const FInputActionValue& Value);
 
     virtual void NotifyControllerChanged() override;
 
@@ -70,4 +73,8 @@ private:
     /** "Look" Input Action */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> LookAction;
+
+    /** "Interact" Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> InteractAction;
 };

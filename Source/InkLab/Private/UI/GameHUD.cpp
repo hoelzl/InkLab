@@ -9,7 +9,7 @@
 #include "UI/InteractionPromptWidget.h"
 #include "UI/ReticleWidget.h"
 
-UGameHUD::UGameHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {}
+UGameHUD::UGameHUD(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer} {}
 
 void UGameHUD::NativeConstruct()
 {

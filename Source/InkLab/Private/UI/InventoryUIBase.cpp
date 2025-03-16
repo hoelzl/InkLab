@@ -5,6 +5,8 @@
 #include "Components/WrapBox.h"
 #include "UI/InventorySlotWidgetBase.h"
 
+UInventoryUIBase::UInventoryUIBase(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer} {}
+
 void UInventoryUIBase::NativeConstruct()
 {
     Super::NativeConstruct();

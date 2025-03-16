@@ -23,7 +23,7 @@ class INKLAB_API UInventoryItemBase : public UPrimaryDataAsset
     GENERATED_BODY()
 
 public:
-    UInventoryItemBase();
+    explicit UInventoryItemBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Item")
     FText Name;

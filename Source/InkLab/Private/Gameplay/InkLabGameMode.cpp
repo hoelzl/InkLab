@@ -3,7 +3,7 @@
 #include "Gameplay/InkLabGameMode.h"
 #include "UObject/ConstructorHelpers.h"
 
-AInkLabGameMode::AInkLabGameMode()
+AInkLabGameMode::AInkLabGameMode(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
 {
     static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass{
         TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter")

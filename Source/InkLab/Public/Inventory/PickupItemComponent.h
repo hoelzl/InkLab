@@ -14,7 +14,7 @@ class INKLAB_API UPickupItemComponent : public UInteractionTargetComponent
     GENERATED_BODY()
 
 public:
-    UPickupItemComponent();
+    explicit UPickupItemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     virtual void OnInteract(UInteractionSourceComponent* Source) override;
 

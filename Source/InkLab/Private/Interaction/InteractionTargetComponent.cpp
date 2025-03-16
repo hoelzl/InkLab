@@ -4,7 +4,8 @@
 
 #include "Interaction/InteractionTargetComponent.h"
 
-UInteractionTargetComponent::UInteractionTargetComponent()
+UInteractionTargetComponent::UInteractionTargetComponent(const FObjectInitializer& ObjectInitializer)
+    : Super{ObjectInitializer}
 {
     PrimaryComponentTick.bCanEverTick = false;
     InteractionPrompt                 = NSLOCTEXT("Interaction", "DefaultPrompt", "Interact");

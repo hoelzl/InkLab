@@ -17,7 +17,7 @@ class INKLAB_API UReticleWidget : public UUserWidget
     GENERATED_BODY()
 
 public:
-    explicit UReticleWidget(const FObjectInitializer& ObjectInitializer);
+    explicit UReticleWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     virtual void NativeConstruct() override;
     virtual void NativePreConstruct() override;

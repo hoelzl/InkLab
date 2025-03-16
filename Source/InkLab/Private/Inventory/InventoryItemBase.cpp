@@ -2,7 +2,7 @@
 
 #include "Inventory/InventoryItemBase.h"
 
-UInventoryItemBase::UInventoryItemBase()
+inline UInventoryItemBase::UInventoryItemBase(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
 {
     Name          = FText::FromString("Item");
     Description   = FText::FromString("An item that can be stored in inventory");

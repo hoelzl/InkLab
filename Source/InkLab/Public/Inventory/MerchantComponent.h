@@ -14,7 +14,7 @@ class INKLAB_API UMerchantComponent : public UInteractionTargetComponent
     GENERATED_BODY()
 
 public:
-    UMerchantComponent();
+    explicit UMerchantComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     virtual void OnInteract(UInteractionSourceComponent* Source) override;
 

@@ -5,7 +5,7 @@
 #include "Interaction/InteractionSourceComponent.h"
 #include "Inventory/InventoryComponent.h"
 
-UPickupItemComponent::UPickupItemComponent()
+UPickupItemComponent::UPickupItemComponent(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
 {
     InteractionPrompt = NSLOCTEXT("Interaction", "PickupPrompt", "Pick Up");
 }
