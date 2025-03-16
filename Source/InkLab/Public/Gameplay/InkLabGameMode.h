@@ -9,11 +9,8 @@
 UCLASS(minimalapi)
 class AInkLabGameMode : public AGameModeBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	AInkLabGameMode();
+    AInkLabGameMode();
 };
-
-
-
