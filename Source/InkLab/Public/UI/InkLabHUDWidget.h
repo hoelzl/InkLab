@@ -41,13 +41,20 @@ public:
     UFUNCTION(BlueprintCallable, Category = "HUD|Reticle")
     void HideReticle() const;
 
+    // Checks whether the inventory UI is visible
+    UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
+    bool IsInventoryPanelVisible() const;
+
     // Shows the inventory UI
     UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
     void ShowInventoryPanel();
 
     // Hides the inventory UI
     UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
-    void HideInventoryPanel() const;
+    void HideInventoryPanel();
+
+    UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
+    void ToggleInventoryPanel();
 
     // Shows a dialogue panel
     UFUNCTION(BlueprintCallable, Category = "HUD|Dialogue")

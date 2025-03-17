@@ -10,9 +10,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Gameplay/InkLabPlayerController.h"
 #include "InputActionValue.h"
 #include "Interaction/InteractionSourceComponent.h"
 #include "Inventory/InventoryComponent.h"
+#include "UI/InkLabHUD.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -113,6 +115,18 @@ void AInkLabCharacter::Interact(const FInputActionValue& Value)
     }
 }
 
+// ReSharper disable once CppMemberFunctionMayBeConst
+void AInkLabCharacter::ToggleInventory(const FInputActionValue& Value)
+{
+    if (const AInkLabPlayerController* PC = GetController<AInkLabPlayerController>())
+    {
+        if (AInkLabHUD* HUD = PC->GetHUD<AInkLabHUD>())
+        {
+            HUD->ToggleInventory();
+        }
+    }
+}
+
 void AInkLabCharacter::NotifyControllerChanged()
 {
     Super::NotifyControllerChanged();
@@ -146,6 +160,9 @@ void AInkLabCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
         // Interacting
         EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AInkLabCharacter::Interact);
+
+        // Toggling the interaction panel
+        EnhancedInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Started, this, &AInkLabCharacter::ToggleInventory);
     }
     else
     {

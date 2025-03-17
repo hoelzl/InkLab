@@ -42,6 +42,9 @@ protected:
     /** Called for interaction input */
     void Interact(const FInputActionValue& Value);
 
+    /** Called to toggle the inventory panel */
+    void ToggleInventory(const FInputActionValue& Value);
+
     virtual void NotifyControllerChanged() override;
 
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -82,4 +85,9 @@ private:
     /** "Interact" Input Action */
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInputAction> InteractAction;
+
+    // TODO: This should not be on the character, but for now...
+    /** "ToggleInventoryPanel" Input Action */
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInputAction> ToggleInventoryAction;
 };

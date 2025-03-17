@@ -17,4 +17,5 @@ class INKLAB_API UInkLabUserWidget : public UUserWidget
 public:
     virtual void Show();
     virtual void Hide();
+    virtual bool IsVisible() const;
 };

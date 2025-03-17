@@ -86,7 +86,7 @@ void AInkLabHUD::ToggleInventory()
 {
     if (HUDWidget)
     {
-        HUDWidget->ShowInventoryPanel();
+        HUDWidget->ToggleInventoryPanel();
     }
 }
 

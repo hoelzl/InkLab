@@ -76,6 +76,15 @@ void UInkLabHUDWidget::HideReticle() const
     }
 }
 
+bool UInkLabHUDWidget::IsInventoryPanelVisible() const
+{
+    if (ensure(InventoryContainer))
+    {
+        return InventoryContainer->IsVisible();
+    }
+    return false;
+}
+
 void UInkLabHUDWidget::ShowInventoryPanel()
 {
     if (!ensure(InventoryContainer))
@@ -110,7 +119,7 @@ void UInkLabHUDWidget::ShowInventoryPanel()
     }
 }
 
-void UInkLabHUDWidget::HideInventoryPanel() const
+void UInkLabHUDWidget::HideInventoryPanel()
 {
     if (!ensure(InventoryContainer))
     {
@@ -124,6 +133,17 @@ void UInkLabHUDWidget::HideInventoryPanel() const
     {
         PC->SetInputMode(FInputModeGameOnly());
         PC->SetShowMouseCursor(false);
+    }
+}
+void UInkLabHUDWidget::ToggleInventoryPanel()
+{
+    if (IsInventoryPanelVisible())
+    {
+        HideInventoryPanel();
+    }
+    else
+    {
+        ShowInventoryPanel();
     }
 }
 
