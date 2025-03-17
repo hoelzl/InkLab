@@ -15,6 +15,20 @@ void UInventoryComponent::BeginPlay()
     Slots.SetNum(Capacity);
 }
 
+int32 UInventoryComponent::GetMoney() const { return Money; }
+
+void UInventoryComponent::AddMoney(int32 Amount) { Money += Amount; }
+
+bool UInventoryComponent::RemoveMoney(int32 Amount)
+{
+    if (Amount <= 0 || Amount > Capacity)
+    {
+        return false;
+    }
+    Money -= Amount;
+    return true;
+}
+
 bool UInventoryComponent::AddItem(UInventoryItemBase* Item, int32 Count)
 {
     if (!Item || Count <= 0 || !CanAddItem(Item, Count))
@@ -41,7 +55,7 @@ bool UInventoryComponent::AddItem(UInventoryItemBase* Item, int32 Count)
     // Add to empty slots if we still have items left
     while (RemainingCount > 0)
     {
-        int32 EmptySlot = FindEmptySlot();
+        int32 EmptySlot = FindIndexOfEmptySlot();
         if (EmptySlot == -1)
         {
             // Shouldn't happen if CanAddItem returned true
@@ -158,23 +172,24 @@ float UInventoryComponent::GetCurrentWeight() const
 
 bool UInventoryComponent::UseItem(int32 SlotIndex)
 {
-    if (SlotIndex < 0 || SlotIndex >= Slots.Num() || !Slots[SlotIndex].Item || Slots[SlotIndex].Count <= 0)
+    FInventorySlot& InventorySlot = Slots[SlotIndex];
+    if (SlotIndex < 0 || SlotIndex >= Slots.Num() || !InventorySlot.Item || InventorySlot.Count <= 0)
     {
         return false;
     }
 
-    UInventoryItemBase* Item = Slots[SlotIndex].Item;
+    UInventoryItemBase* Item = InventorySlot.Item;
     bool bWasUsed            = Item->Use(GetOwner());
 
     if (bWasUsed)
     {
         // Remove one item after use
-        Slots[SlotIndex].Count--;
+        InventorySlot.Count--;
 
-        if (Slots[SlotIndex].Count <= 0)
+        if (InventorySlot.Count <= 0)
         {
-            Slots[SlotIndex].Item  = nullptr;
-            Slots[SlotIndex].Count = 0;
+            InventorySlot.Item  = nullptr;
+            InventorySlot.Count = 0;
         }
 
         OnInventoryUpdated.Broadcast();
@@ -185,26 +200,27 @@ bool UInventoryComponent::UseItem(int32 SlotIndex)
 
 bool UInventoryComponent::TransferItem(UInventoryComponent* TargetInventory, int32 SlotIndex, int32 Count)
 {
-    if (!TargetInventory || SlotIndex < 0 || SlotIndex >= Slots.Num() || !Slots[SlotIndex].Item
-        || Slots[SlotIndex].Count <= 0 || Count <= 0)
+    FInventorySlot& InventorySlot = Slots[SlotIndex];
+    if (!TargetInventory || SlotIndex < 0 || SlotIndex >= Slots.Num() || !InventorySlot.Item || InventorySlot.Count <= 0
+        || Count <= 0)
     {
         return false;
     }
 
-    UInventoryItemBase* Item = Slots[SlotIndex].Item;
-    int32 ActualCount        = FMath::Min(Count, Slots[SlotIndex].Count);
+    UInventoryItemBase* Item = InventorySlot.Item;
+    int32 ActualCount        = FMath::Min(Count, InventorySlot.Count);
 
     if (TargetInventory->CanAddItem(Item, ActualCount))
     {
         TargetInventory->AddItem(Item, ActualCount);
 
         // Remove the items from our inventory
-        Slots[SlotIndex].Count -= ActualCount;
+        InventorySlot.Count -= ActualCount;
 
-        if (Slots[SlotIndex].Count <= 0)
+        if (InventorySlot.Count <= 0)
         {
-            Slots[SlotIndex].Item  = nullptr;
-            Slots[SlotIndex].Count = 0;
+            InventorySlot.Item  = nullptr;
+            InventorySlot.Count = 0;
         }
 
         OnInventoryUpdated.Broadcast();
@@ -223,7 +239,7 @@ bool UInventoryComponent::SwapSlots(int32 SourceSlotIndex, int32 TargetSlotIndex
     }
 
     // Swap the slots
-    FInventorySlot TempSlot = Slots[SourceSlotIndex];
+    const FInventorySlot TempSlot = Slots[SourceSlotIndex];
     Slots[SourceSlotIndex]  = Slots[TargetSlotIndex];
     Slots[TargetSlotIndex]  = TempSlot;
 
@@ -242,7 +258,7 @@ bool UInventoryComponent::GetSlot(int32 SlotIndex, FInventorySlot& OutSlot) cons
     return true;
 }
 
-int32 UInventoryComponent::FindExistingStack(const UInventoryItemBase* Item) const
+int32 UInventoryComponent::FindIndexOfExistingStack(const UInventoryItemBase* Item, bool bAllowFullStack) const
 {
     if (!Item || !Item->CanStack())
     {
@@ -251,7 +267,7 @@ int32 UInventoryComponent::FindExistingStack(const UInventoryItemBase* Item) con
 
     for (int32 i = 0; i < Slots.Num(); i++)
     {
-        if (Slots[i].Item == Item && Slots[i].Count < Item->MaxStackCount)
+        if (Slots[i].Item == Item && (bAllowFullStack || Slots[i].Count < Item->MaxStackCount))
         {
             return i;
         }
@@ -260,7 +276,7 @@ int32 UInventoryComponent::FindExistingStack(const UInventoryItemBase* Item) con
     return -1;
 }
 
-int32 UInventoryComponent::FindEmptySlot() const
+int32 UInventoryComponent::FindIndexOfEmptySlot() const
 {
     for (int32 i = 0; i < Slots.Num(); i++)
     {

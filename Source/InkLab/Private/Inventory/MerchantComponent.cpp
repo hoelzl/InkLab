@@ -1,6 +1,7 @@
 ﻿// Copyright Dr. Matthias Hölzl
 
 // MerchantComponent.cpp
+
 #include "Inventory/MerchantComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
@@ -29,6 +30,8 @@ void UMerchantComponent::OnInteract(UInteractionSourceComponent* Source)
 {
     Super::OnInteract(Source);
 
+    // TODO: Maybe get PC from Source? But that makes UInteractionsSourceComponent more complex...
+    // Or define a helper function that checks the type of Outer and then dispatches?
     APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
     if (!PC || !MerchantUIClass)
     {
@@ -47,69 +50,95 @@ void UMerchantComponent::OnInteract(UInteractionSourceComponent* Source)
     }
 }
 
-bool UMerchantComponent::BuyItemFromPlayer(UInventoryComponent* PlayerInventory, int32 PlayerSlotIndex, int32 Count)
+ESalesResult
+UMerchantComponent::BuyItemFromPlayer(UInventoryComponent* PlayerInventory, int32 PlayerSlotIndex, int32 Count)
 {
     if (!PlayerInventory || !MerchantInventory || PlayerSlotIndex < 0
         || PlayerSlotIndex >= PlayerInventory->Slots.Num())
     {
-        return false;
+        return ESalesResult::BadSalesAttempt;
     }
 
     FInventorySlot PlayerSlot;
     if (!PlayerInventory->GetSlot(PlayerSlotIndex, PlayerSlot) || !PlayerSlot.Item || PlayerSlot.Count < Count)
     {
-        return false;
+        return ESalesResult::NotAvailable;
     }
 
     UInventoryItemBase* ItemToBuy = PlayerSlot.Item;
     int32 BuyPrice                = GetBuyPriceForItem(ItemToBuy, Count);
 
-    // TODO: Add currency system to pay the player
-    // For now, just transfer items
+    if (MerchantInventory->GetMoney() < BuyPrice)
+    {
+        BuyPrice = MerchantInventory->GetMoney();
+    }
 
     if (MerchantInventory->CanAddItem(ItemToBuy, Count))
     {
         if (PlayerInventory->RemoveItem(ItemToBuy, Count))
         {
             MerchantInventory->AddItem(ItemToBuy, Count);
-            return true;
+            PlayerInventory->RemoveMoney(BuyPrice);
+            MerchantInventory->AddMoney(BuyPrice);
+            return ESalesResult::Success;
+        }
+        else
+        {
+            return ESalesResult::NotAvailable;
         }
     }
+    else
+    {
+        return ESalesResult::MerchantHasNoSpace;
+    }
 
-    return false;
+    return ESalesResult::UnknownError;
 }
 
-bool UMerchantComponent::SellItemToPlayer(UInventoryComponent* PlayerInventory, int32 MerchantSlotIndex, int32 Count)
+ESalesResult
+UMerchantComponent::SellItemToPlayer(UInventoryComponent* PlayerInventory, int32 MerchantSlotIndex, int32 Count)
 {
     if (!PlayerInventory || !MerchantInventory || MerchantSlotIndex < 0
         || MerchantSlotIndex >= MerchantInventory->Slots.Num())
     {
-        return false;
+        return ESalesResult::BadSalesAttempt;
     }
 
     FInventorySlot MerchantSlot;
     if (!MerchantInventory->GetSlot(MerchantSlotIndex, MerchantSlot) || !MerchantSlot.Item
         || MerchantSlot.Count < Count)
     {
-        return false;
+        return ESalesResult::NotAvailable;
     }
 
     UInventoryItemBase* ItemToSell = MerchantSlot.Item;
     int32 SellPrice                = GetSellPriceForItem(ItemToSell, Count);
 
-    // TODO: Check if player has enough currency
-    // For now, just transfer items
+    if (SellPrice > PlayerInventory->GetMoney())
+    {
+        return ESalesResult::NotEnoughMoney;
+    }
 
     if (PlayerInventory->CanAddItem(ItemToSell, Count))
     {
         if (MerchantInventory->RemoveItem(ItemToSell, Count))
         {
             PlayerInventory->AddItem(ItemToSell, Count);
-            return true;
+            PlayerInventory->RemoveMoney(SellPrice);
+            MerchantInventory->AddMoney(SellPrice);
+            return ESalesResult::Success;
+        }
+        else
+        {
+            return ESalesResult::NotAvailable;
         }
     }
+    else
+    {
+        return ESalesResult::PlayerHasNoSpace;
+    }
 
-    return false;
+    return ESalesResult::UnknownError;
 }
 
 int32 UMerchantComponent::GetBuyPriceForItem(UInventoryItemBase* Item, int32 Count) const

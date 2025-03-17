@@ -6,7 +6,7 @@
 AInkLabGameMode::AInkLabGameMode(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
 {
     static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass{
-        TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter")
+        TEXT("/Game/Blueprints/Characters/BP_ThirdPersonCharacter")
     };
     if (PlayerPawnBPClass.Class != nullptr)
     {

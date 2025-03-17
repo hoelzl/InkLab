@@ -9,7 +9,20 @@
 
 UInventorySlotWidgetBase::UInventorySlotWidgetBase(const FObjectInitializer& ObjectInitializer)
     : Super{ObjectInitializer}
-{}
+{
+    ConstructorHelpers::FObjectFinder<UTexture2D> DefaultItemTexture{
+        TEXT("/Game/UI/Images/DefaultInventoryItem.DefaultInventoryItem")
+    };
+    if (DefaultItemTexture.Succeeded())
+    {
+        ItemIcon = DefaultItemTexture.Object;
+    }
+}
+void UInventorySlotWidgetBase::SynchronizeProperties()
+{
+    Super::SynchronizeProperties();
+    UpdateButtonStyle();
+}
 
 void UInventorySlotWidgetBase::NativeConstruct()
 {
@@ -18,26 +31,13 @@ void UInventorySlotWidgetBase::NativeConstruct()
     if (SlotButton)
     {
         SlotButton->OnClicked.AddDynamic(this, &UInventorySlotWidgetBase::OnSlotButtonClicked);
+        UpdateButtonStyle();
     }
 }
 
 void UInventorySlotWidgetBase::UpdateSlot(const FInventorySlot& NewSlot)
 {
     CurrentSlot = NewSlot;
-
-    // Update the UI elements based on the slot data
-    if (ItemIcon)
-    {
-        if (CurrentSlot.Item && CurrentSlot.Count > 0)
-        {
-            ItemIcon->SetBrushFromTexture(CurrentSlot.Item->Icon);
-            ItemIcon->SetVisibility(ESlateVisibility::Visible);
-        }
-        else
-        {
-            ItemIcon->SetVisibility(ESlateVisibility::Hidden);
-        }
-    }
 
     if (ItemCount)
     {
@@ -92,4 +92,24 @@ bool UInventorySlotWidgetBase::ReceiveDrop(UInventorySlotWidgetBase* DraggedSlot
     }
 
     return false;
+}
+
+void UInventorySlotWidgetBase::UpdateButtonStyle() const
+{
+    if (SlotButton && ItemIcon)
+    {
+        FButtonStyle Style = SlotButton->GetStyle();
+        UpdateButtonBrush(Style.Normal);
+        UpdateButtonBrush(Style.Hovered);
+        UpdateButtonBrush(Style.Pressed);
+        UpdateButtonBrush(Style.Disabled);
+        SlotButton->SetStyle(Style);
+    }
+}
+
+void UInventorySlotWidgetBase::UpdateButtonBrush(FSlateBrush& Brush) const
+{
+    Brush.SetResourceObject(ItemIcon);
+    Brush.ImageSize = FVector2D::ZeroVector;
+    Brush.DrawAs    = ESlateBrushDrawType::Image;
 }

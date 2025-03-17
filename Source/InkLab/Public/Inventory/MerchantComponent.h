@@ -8,6 +8,18 @@
 #include "Inventory/InventoryComponent.h"
 #include "MerchantComponent.generated.h"
 
+UENUM()
+enum class ESalesResult
+{
+    Success,
+    BadSalesAttempt,
+    NotAvailable,
+    MerchantHasNoSpace,
+    PlayerHasNoSpace,
+    NotEnoughMoney,
+    UnknownError,
+};
+
 UCLASS(ClassGroup = (Inventory), meta = (BlueprintSpawnableComponent))
 class INKLAB_API UMerchantComponent : public UInteractionTargetComponent
 {
@@ -31,10 +43,10 @@ public:
     float SellValueMultiplier = 1.5f;
 
     UFUNCTION(BlueprintCallable, Category = "Merchant")
-    bool BuyItemFromPlayer(UInventoryComponent* PlayerInventory, int32 PlayerSlotIndex, int32 Count = 1);
+    ESalesResult BuyItemFromPlayer(UInventoryComponent* PlayerInventory, int32 PlayerSlotIndex, int32 Count = 1);
 
     UFUNCTION(BlueprintCallable, Category = "Merchant")
-    bool SellItemToPlayer(UInventoryComponent* PlayerInventory, int32 MerchantSlotIndex, int32 Count = 1);
+    ESalesResult SellItemToPlayer(UInventoryComponent* PlayerInventory, int32 MerchantSlotIndex, int32 Count = 1);
 
     UFUNCTION(BlueprintCallable, Category = "Merchant")
     int32 GetBuyPriceForItem(UInventoryItemBase* Item, int32 Count = 1) const;

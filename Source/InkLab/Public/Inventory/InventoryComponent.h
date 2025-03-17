@@ -13,7 +13,7 @@ struct FInventorySlot
     GENERATED_BODY()
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
-    UInventoryItemBase* Item = nullptr;
+    TObjectPtr<UInventoryItemBase> Item = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
     int32 Count = 0;
@@ -32,6 +32,9 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "Inventory")
     FOnInventoryUpdated OnInventoryUpdated;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
+    int32 Money = 0;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Inventory")
     int32 Capacity = 20;
 
@@ -41,6 +44,18 @@ public:
     // Array of inventory slots
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
     TArray<FInventorySlot> Slots;
+
+    // Get the amount of money in the inventory
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    int32 GetMoney() const;
+
+    // Add money to the inventory
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    void AddMoney(int32 Amount);
+
+    // Remove money from the inventory. Returns true on success, false if there was not enough money.
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    bool RemoveMoney(int32 Amount);
 
     // Add an item to the inventory
     UFUNCTION(BlueprintCallable, Category = "Inventory")
@@ -74,12 +89,15 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     bool GetSlot(int32 SlotIndex, FInventorySlot& OutSlot) const;
 
+    // Helper function to find existing stacks of an item
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    int32 FindIndexOfExistingStack(const UInventoryItemBase* Item, bool bAllowFullStack = false) const;
+
+    // Helper function to find an empty slot
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    int32 FindIndexOfEmptySlot() const;
+
 protected:
     virtual void BeginPlay() override;
 
-    // Helper function to find existing stacks of an item
-    int32 FindExistingStack(const UInventoryItemBase* Item) const;
-
-    // Helper function to find an empty slot
-    int32 FindEmptySlot() const;
 };

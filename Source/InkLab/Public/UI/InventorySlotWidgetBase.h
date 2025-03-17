@@ -20,9 +20,10 @@ class INKLAB_API UInventorySlotWidgetBase : public UUserWidget
 
 public:
     explicit UInventorySlotWidgetBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+    virtual void SynchronizeProperties() override;
 
-    UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-    TObjectPtr<UImage> ItemIcon;
+    UPROPERTY(BlueprintReadWrite)
+    TObjectPtr<UTexture2D> ItemIcon;
 
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
     TObjectPtr<UTextBlock> ItemCount;
@@ -60,4 +61,8 @@ protected:
 
     UFUNCTION()
     void OnSlotButtonClicked();
+
+private:
+    void UpdateButtonStyle() const;
+    void UpdateButtonBrush(FSlateBrush& Brush) const;
 };
