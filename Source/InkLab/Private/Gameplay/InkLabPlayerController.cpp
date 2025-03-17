@@ -6,34 +6,30 @@
 #include "Characters/InkLabCharacter.h"
 #include "Interaction/InteractionSourceComponent.h"
 #include "Inventory/InventoryComponent.h"
-#include "UI/HUDControllerComponent.h"
-AInkLabPlayerController::AInkLabPlayerController(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
-{
-    HUDController = CreateDefaultSubobject<UHUDControllerComponent>("HUDController");
-}
-
-UHUDControllerComponent* AInkLabPlayerController::GetHUDController() const { return HUDController; }
+#include "UI/InkLabHUD.h"
 
 void AInkLabPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (!HUDController)
+    AInkLabHUD* InkLabHUD                   = Cast<AInkLabHUD>(GetHUD());
+    const AInkLabCharacter* InkLabCharacter = GetPawn<AInkLabCharacter>();
+
+    if (!ensure(InkLabHUD) || !ensure(InkLabCharacter))
     {
         return;
     }
 
-    if (const AInkLabCharacter* InkLabCharacter = GetPawn<AInkLabCharacter>())
+    if (UInteractionSourceComponent* InteractionSource =
+            InkLabCharacter->FindComponentByClass<UInteractionSourceComponent>();
+        ensure(InteractionSource))
     {
-        if (UInteractionSourceComponent* InteractionSource =
-                InkLabCharacter->FindComponentByClass<UInteractionSourceComponent>())
-        {
-            HUDController->SetupInteractionListeners(InteractionSource);
-        }
+        InkLabHUD->SetupInteractionListeners(InteractionSource);
+    }
 
-        if (UInventoryComponent* InventoryComponent = InkLabCharacter->FindComponentByClass<UInventoryComponent>())
-        {
-            HUDController->SetupInventoryListeners(InventoryComponent);
-        }
+    if (UInventoryComponent* InventoryComponent = InkLabCharacter->FindComponentByClass<UInventoryComponent>();
+        ensure(InventoryComponent))
+    {
+        InkLabHUD->SetupInventoryListeners(InventoryComponent);
     }
 }

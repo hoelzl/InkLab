@@ -9,6 +9,7 @@
 #include "InkLabCharacter.generated.h"
 
 
+class UInventoryComponent;
 class UInteractionSourceComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -49,6 +50,10 @@ private:
     /** Interaction source component to enable the player to trigger interactions. */
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Interaction, meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInteractionSourceComponent> InteractionSource;
+
+    /** Inventory component */
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    TObjectPtr<UInventoryComponent> InventoryComponent;
 
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

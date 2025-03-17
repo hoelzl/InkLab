@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "GameHUD.generated.h"
+#include "InkLabHUDWidget.generated.h"
 
 class UReticleWidget;
 class UInteractionPromptWidget;
@@ -16,31 +16,38 @@ class UOverlay;
  * Main HUD widget that controls all UI elements for the game
  */
 UCLASS()
-class INKLAB_API UGameHUD : public UUserWidget
+class INKLAB_API UInkLabHUDWidget : public UUserWidget
 {
     GENERATED_BODY()
 
 public:
-    explicit UGameHUD(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+    explicit UInkLabHUDWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     virtual void NativeConstruct() override;
     virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
     // Sets the interaction prompt text and makes it visible
     UFUNCTION(BlueprintCallable, Category = "HUD|Interaction")
-    void ShowInteractionPrompt(const FText& PromptText);
+    void ShowInteractionPrompt(const FText& ActionDescription);
 
     // Hides the interaction prompt
     UFUNCTION(BlueprintCallable, Category = "HUD|Interaction")
     void HideInteractionPrompt() const;
 
-    // Shows or hides the reticle
+    // Shows the reticle
     UFUNCTION(BlueprintCallable, Category = "HUD|Reticle")
-    void SetReticleVisibility(bool bVisible) const;
+    void ShowReticle() const;
 
-    // Toggles the inventory UI
+    UFUNCTION(BlueprintCallable, Category = "HUD|Reticle")
+    void HideReticle() const;
+
+    // Shows the inventory UI
     UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
-    void ToggleInventoryPanel();
+    void ShowInventoryPanel();
+
+    // Hides the inventory UI
+    UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
+    void HideInventoryPanel() const;
 
     // Shows a dialogue panel
     UFUNCTION(BlueprintCallable, Category = "HUD|Dialogue")
@@ -58,10 +65,6 @@ protected:
     // Main container for all HUD elements
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
     TObjectPtr<UCanvasPanel> RootCanvas;
-
-    // Permanent HUD elements (reticle, interaction prompts)
-    UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-    TObjectPtr<UOverlay> GameplayHUDOverlay;
 
     // Container for inventory UI
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))

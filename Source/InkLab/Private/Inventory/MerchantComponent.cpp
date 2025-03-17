@@ -7,7 +7,7 @@
 
 UMerchantComponent::UMerchantComponent(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
 {
-    InteractionPrompt = NSLOCTEXT("Interaction", "MerchantPrompt", "Trade");
+    ActionDescription = NSLOCTEXT("Interaction", "MerchantPrompt", "Trade");
 
     // Create an inventory component for the merchant
     MerchantInventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("MerchantInventory"));

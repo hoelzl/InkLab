@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "Blueprint/UserWidget.h"
+#include "InkLabUserWidget.h"
 #include "ReticleWidget.generated.h"
 
 class UImage;
@@ -12,7 +14,7 @@ class UImage;
  * Widget for displaying an aiming reticle
  */
 UCLASS()
-class INKLAB_API UReticleWidget : public UUserWidget
+class INKLAB_API UReticleWidget : public UInkLabUserWidget
 {
     GENERATED_BODY()
 

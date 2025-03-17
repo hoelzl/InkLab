@@ -1,28 +1,31 @@
 ﻿// Copyright Dr. Matthias Hölzl
 // HUDControllerComponent.h
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "HUDControllerComponent.generated.h"
+#include "GameFramework/HUD.h"
+
+#include "InkLabHUD.generated.h"
 
 
 class UInteractionTargetComponent;
 class UInventoryComponent;
 class UInteractionSourceComponent;
 class UWidget;
-class UGameHUD;
+class UInkLabHUDWidget;
+
 /**
- * Component that provides an interface for controlling the game HUD
- * Attach this to your player controller or character
+ * HUD class that manages interaction between HUD and game subsystems
  */
 UCLASS(Blueprintable, BlueprintType, ClassGroup = (UI), meta = (BlueprintSpawnableComponent))
-class INKLAB_API UHUDControllerComponent : public UActorComponent
+class INKLAB_API AInkLabHUD : public AHUD
 {
     GENERATED_BODY()
 
 public:
-    explicit UHUDControllerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+    explicit AInkLabHUD(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     virtual void BeginPlay() override;
 
@@ -36,11 +39,11 @@ public:
 
     // Reference to the created HUD widget
     UPROPERTY(BlueprintReadOnly, Category = "HUD")
-    TObjectPtr<UGameHUD> GameHUD;
+    TObjectPtr<UInkLabHUDWidget> HUDWidget;
 
     // Class to use for the HUD widget
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD")
-    TSubclassOf<UGameHUD> GameHUDClass;
+    TSubclassOf<UInkLabHUDWidget> HUDWidgetClass;
 
     // Shows the interaction prompt with specified text
     UFUNCTION(BlueprintCallable, Category = "HUD|Interaction")

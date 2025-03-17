@@ -2,16 +2,16 @@
 
 // GameHUD.cpp
 
-#include "UI/GameHUD.h"
+#include "UI/InkLabHUDWidget.h"
 #include "Components/Overlay.h"
 #include "Components/OverlaySlot.h"
 #include "Components/TextBlock.h"
 #include "UI/InteractionPromptWidget.h"
 #include "UI/ReticleWidget.h"
 
-UGameHUD::UGameHUD(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer} {}
+UInkLabHUDWidget::UInkLabHUDWidget(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer} {}
 
-void UGameHUD::NativeConstruct()
+void UInkLabHUDWidget::NativeConstruct()
 {
     Super::NativeConstruct();
 
@@ -37,87 +37,97 @@ void UGameHUD::NativeConstruct()
     }
 }
 
-void UGameHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+void UInkLabHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
     Super::NativeTick(MyGeometry, InDeltaTime);
 
     // Any per-frame HUD updates can go here
 }
 
-void UGameHUD::ShowInteractionPrompt(const FText& PromptText)
+void UInkLabHUDWidget::ShowInteractionPrompt(const FText& ActionDescription)
 {
-    if (InteractionPrompt)
+    if (ensure(InteractionPrompt))
     {
-        InteractionPrompt->SetPromptText(PromptText);
-        InteractionPrompt->SetVisibility(ESlateVisibility::Visible);
+        InteractionPrompt->SetActionDescription(ActionDescription);
+        InteractionPrompt->Show();
     }
 }
 
-void UGameHUD::HideInteractionPrompt() const
+void UInkLabHUDWidget::HideInteractionPrompt() const
 {
-    if (InteractionPrompt)
+    if (ensure(InteractionPrompt))
     {
-        InteractionPrompt->SetVisibility(ESlateVisibility::Hidden);
+        InteractionPrompt->Hide();
     }
 }
 
-void UGameHUD::SetReticleVisibility(bool bVisible) const
+void UInkLabHUDWidget::ShowReticle() const
 {
-    if (ReticleWidget)
+    if (ensure(ReticleWidget))
     {
-        ReticleWidget->SetVisibility(bVisible ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+        ReticleWidget->Show();
+    }
+}
+void UInkLabHUDWidget::HideReticle() const
+{
+    if (ensure(ReticleWidget))
+    {
+        ReticleWidget->Hide();
     }
 }
 
-void UGameHUD::ToggleInventoryPanel()
+void UInkLabHUDWidget::ShowInventoryPanel()
 {
-    if (!InventoryContainer)
+    if (!ensure(InventoryContainer))
     {
         return;
     }
 
-    if (InventoryContainer->GetVisibility() == ESlateVisibility::Visible)
+    // Create inventory widget if it doesn't exist
+    if (!CurrentInventoryWidget && InventoryWidgetClass)
     {
-        InventoryContainer->SetVisibility(ESlateVisibility::Hidden);
+        CurrentInventoryWidget = CreateWidget<UUserWidget>(this, InventoryWidgetClass);
+        if (CurrentInventoryWidget)
+        {
+            InventoryContainer->AddChild(CurrentInventoryWidget);
 
-        // Enable gameplay input when inventory is closed
-        if (APlayerController* PC = GetOwningPlayer())
-        {
-            PC->SetInputMode(FInputModeGameOnly());
-            PC->SetShowMouseCursor(false);
-        }
-    }
-    else
-    {
-        // Create inventory widget if it doesn't exist
-        if (!CurrentInventoryWidget && InventoryWidgetClass)
-        {
-            CurrentInventoryWidget = CreateWidget<UUserWidget>(this, InventoryWidgetClass);
-            if (CurrentInventoryWidget)
+            // Configure overlay slot to fill parent
+            if (UOverlaySlot* OverlaySlot = Cast<UOverlaySlot>(CurrentInventoryWidget->Slot))
             {
-                InventoryContainer->AddChild(CurrentInventoryWidget);
-
-                // Configure overlay slot to fill parent
-                if (UOverlaySlot* OverlaySlot = Cast<UOverlaySlot>(CurrentInventoryWidget->Slot))
-                {
-                    OverlaySlot->SetHorizontalAlignment(HAlign_Fill);
-                    OverlaySlot->SetVerticalAlignment(VAlign_Fill);
-                }
+                OverlaySlot->SetHorizontalAlignment(HAlign_Fill);
+                OverlaySlot->SetVerticalAlignment(VAlign_Fill);
             }
         }
+    }
 
-        InventoryContainer->SetVisibility(ESlateVisibility::Visible);
+    InventoryContainer->SetVisibility(ESlateVisibility::Visible);
 
-        // Enable UI input when inventory is open
-        if (APlayerController* PC = GetOwningPlayer())
-        {
-            PC->SetInputMode(FInputModeGameAndUI());
-            PC->SetShowMouseCursor(true);
-        }
+    // Enable UI input when inventory is open
+    if (APlayerController* PC = GetOwningPlayer())
+    {
+        PC->SetInputMode(FInputModeGameAndUI());
+        PC->SetShowMouseCursor(true);
     }
 }
 
-void UGameHUD::ShowDialoguePanel(UWidget* DialogueWidget)
+void UInkLabHUDWidget::HideInventoryPanel() const
+{
+    if (!ensure(InventoryContainer))
+    {
+        return;
+    }
+
+    InventoryContainer->SetVisibility(ESlateVisibility::Hidden);
+
+    // Enable gameplay input when inventory is closed
+    if (APlayerController* PC = GetOwningPlayer())
+    {
+        PC->SetInputMode(FInputModeGameOnly());
+        PC->SetShowMouseCursor(false);
+    }
+}
+
+void UInkLabHUDWidget::ShowDialoguePanel(UWidget* DialogueWidget)
 {
     if (!DialogueContainer || !DialogueWidget)
     {
@@ -154,7 +164,7 @@ void UGameHUD::ShowDialoguePanel(UWidget* DialogueWidget)
     }
 }
 
-void UGameHUD::HideDialoguePanel()
+void UInkLabHUDWidget::HideDialoguePanel()
 {
     if (!DialogueContainer)
     {
@@ -171,7 +181,7 @@ void UGameHUD::HideDialoguePanel()
     }
 }
 
-void UGameHUD::ShowQuestNotification(const FText& QuestText, float Duration)
+void UInkLabHUDWidget::ShowQuestNotification(const FText& QuestText, float Duration)
 {
     if (!QuestNotificationContainer)
     {
@@ -194,11 +204,11 @@ void UGameHUD::ShowQuestNotification(const FText& QuestText, float Duration)
     // Set timer to hide notification
     GetWorld()->GetTimerManager().ClearTimer(QuestNotificationTimerHandle);
     GetWorld()->GetTimerManager().SetTimer(
-        QuestNotificationTimerHandle, this, &UGameHUD::HideQuestNotification, Duration, false
+        QuestNotificationTimerHandle, this, &UInkLabHUDWidget::HideQuestNotification, Duration, false
     );
 }
 
-void UGameHUD::HideQuestNotification() const
+void UInkLabHUDWidget::HideQuestNotification() const
 {
     if (QuestNotificationContainer)
     {

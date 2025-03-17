@@ -38,8 +38,11 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "Interaction")
     FOnEndFocus OnEndFocusDelegate;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+    FText ObjectDescription;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
-    FText InteractionPrompt;
+    FText ActionDescription;
 
 protected:
     virtual void BeginPlay() override;

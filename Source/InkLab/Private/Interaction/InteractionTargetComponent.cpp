@@ -8,7 +8,8 @@ UInteractionTargetComponent::UInteractionTargetComponent(const FObjectInitialize
     : Super{ObjectInitializer}
 {
     PrimaryComponentTick.bCanEverTick = false;
-    InteractionPrompt                 = NSLOCTEXT("Interaction", "DefaultPrompt", "Interact");
+    ObjectDescription                 = NSLOCTEXT("Interaction", "DefaultObjectDescription", "an object");
+    ActionDescription                 = NSLOCTEXT("Interaction", "DefaultPrompt", "Interact");
 }
 
 void UInteractionTargetComponent::BeginPlay() { Super::BeginPlay(); }

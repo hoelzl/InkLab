@@ -7,38 +7,45 @@
 UInteractionPromptWidget::UInteractionPromptWidget(const FObjectInitializer& ObjectInitializer)
     : Super{ObjectInitializer}
 {
-    CurrentActionText = FText::FromString("interact");
+    ActionDescription = FText::FromString("interact");
 }
 
 void UInteractionPromptWidget::NativeConstruct()
 {
     Super::NativeConstruct();
-
-    if (KeyTextBlock)
-    {
-        KeyTextBlock->SetText(DefaultKeyText);
-    }
-
     UpdateFullPromptText();
 }
-
-void UInteractionPromptWidget::SetPromptText(const FText& NewPromptText)
+void UInteractionPromptWidget::Show()
 {
-    CurrentActionText = NewPromptText;
+    UpdateFullPromptText();
+    Super::Show();
+}
+void UInteractionPromptWidget::Hide()
+{
+    Super::Hide();
+    // Ensure that we have a useful action description and don't keep the last target's description around
+    // if somebody doesn't properly set the description.
+    ActionDescription = FText::FromString("interact");
+}
+
+void UInteractionPromptWidget::SetPromptFormatString(const FText& NewPromptFormatString)
+{
+    ActionDescription = NewPromptFormatString;
     UpdateFullPromptText();
 }
 
 void UInteractionPromptWidget::SetInteractionKey(const FText& NewKeyText)
 {
-    if (KeyTextBlock)
-    {
-        KeyTextBlock->SetText(NewKeyText);
-    }
-
+    InteractionKey = NewKeyText;
+    UpdateFullPromptText();
+}
+void UInteractionPromptWidget::SetActionDescription(const FText& NewActionDescription)
+{
+    ActionDescription = NewActionDescription;
     UpdateFullPromptText();
 }
 
-void UInteractionPromptWidget::UpdateFullPromptText()
+void UInteractionPromptWidget::UpdateFullPromptText() const
 {
     if (!PromptTextBlock)
     {
@@ -46,9 +53,9 @@ void UInteractionPromptWidget::UpdateFullPromptText()
     }
 
     FFormatNamedArguments Args;
-    Args.Add("key", KeyTextBlock ? KeyTextBlock->GetText() : DefaultKeyText);
-    Args.Add("action", CurrentActionText);
+    Args.Add("key", InteractionKey);
+    Args.Add("action", ActionDescription);
 
-    FText FormattedText = FText::Format(PromptFormatText, Args);
+    const FText FormattedText = FText::Format(PromptFormatString, Args);
     PromptTextBlock->SetText(FormattedText);
 }

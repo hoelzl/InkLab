@@ -7,7 +7,7 @@
 
 UPickupItemComponent::UPickupItemComponent(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
 {
-    InteractionPrompt = NSLOCTEXT("Interaction", "PickupPrompt", "Pick Up");
+    ActionDescription = NSLOCTEXT("Interaction", "PickupPrompt", "Pick Up");
 }
 
 void UPickupItemComponent::BeginPlay()
@@ -16,7 +16,7 @@ void UPickupItemComponent::BeginPlay()
 
     if (ItemToPickup)
     {
-        InteractionPrompt =
+        ActionDescription =
             FText::Format(NSLOCTEXT("Interaction", "PickupPromptWithName", "Pick Up {0}"), ItemToPickup->Name);
     }
 }

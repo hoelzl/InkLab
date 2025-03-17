@@ -3,15 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+
+#include "InkLabUserWidget.h"
 #include "Inventory/InventoryComponent.h"
+
 #include "InventoryUIBase.generated.h"
 
 class UInventorySlotWidgetBase;
 class UWrapBox;
 
 UCLASS()
-class INKLAB_API UInventoryUIBase : public UUserWidget
+class INKLAB_API UInventoryUIBase : public UInkLabUserWidget
 {
     GENERATED_BODY()
 

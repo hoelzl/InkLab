@@ -12,6 +12,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "InputActionValue.h"
 #include "Interaction/InteractionSourceComponent.h"
+#include "Inventory/InventoryComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -43,6 +44,9 @@ AInkLabCharacter::AInkLabCharacter(const FObjectInitializer& ObjectInitializer) 
 
     // Create the interaction source component
     InteractionSource = CreateDefaultSubobject<UInteractionSourceComponent>("InteractionSource");
+
+    // Create the inventory component
+    InventoryComponent = CreateDefaultSubobject<UInventoryComponent>("InventoryComponent");
 
     // Create a camera boom (pulls in towards the player if there is a collision)
     CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -103,7 +107,6 @@ void AInkLabCharacter::Look(const FInputActionValue& Value)
 // ReSharper disable once CppMemberFunctionMayBeConst
 void AInkLabCharacter::Interact(const FInputActionValue& Value)
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Orange, "Interacting");
     if (InteractionSource != nullptr)
     {
         InteractionSource->TriggerInteraction();
