@@ -1,9 +1,10 @@
 ﻿// Copyright Dr. Matthias Hölzl
 
-
 #include "UI/InventoryUIBase.h"
-#include "Components/WrapBox.h"
-#include "UI/InventorySlotWidgetBase.h"
+
+#include "Components/TileView.h"
+#include "Inventory/InventorySlotData.h"
+#include "UI/InventorySlotWidget.h"
 
 UInventoryUIBase::UInventoryUIBase(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer} {}
 
@@ -29,7 +30,6 @@ void UInventoryUIBase::SetInventoryComponent(UInventoryComponent* NewInventoryCo
 
     if (InventoryComponent)
     {
-        MaxWeightDisplay = InventoryComponent->MaxWeight;
         InventoryComponent->OnInventoryUpdated.AddDynamic(this, &UInventoryUIBase::OnInventoryUpdated);
         RefreshInventory();
     }
@@ -37,45 +37,30 @@ void UInventoryUIBase::SetInventoryComponent(UInventoryComponent* NewInventoryCo
 
 void UInventoryUIBase::RefreshInventory()
 {
-    if (!InventoryComponent || !InventorySlotsContainer || !SlotWidgetClass)
+    if (!InventoryComponent || !InventorySlotsContainer)
     {
         return;
     }
 
-    // Clear existing slots
-    InventorySlotsContainer->ClearChildren();
-    SlotWidgets.Empty();
-
-    // Create new slots
-    for (int32 i = 0; i < InventoryComponent->Slots.Num(); i++)
+    if (CapacityTextBlock)
     {
-        if (UInventorySlotWidgetBase* SlotWidget = CreateWidget<UInventorySlotWidgetBase>(this, SlotWidgetClass))
-        {
-            SlotWidget->InventoryRef = InventoryComponent;
-            SlotWidget->SlotIndex    = i;
-            SlotWidget->UpdateSlot(InventoryComponent->Slots[i]);
-
-            InventorySlotsContainer->AddChild(SlotWidget);
-            SlotWidgets.Add(SlotWidget);
-        }
+        CapacityTextBlock->SetText(
+            FText::Format(CapacityFormatString, InventoryComponent->GetNumFreeSlots(), InventoryComponent->Capacity)
+        );
+    }
+    if (MoneyTextBlock)
+    {
+        MoneyTextBlock->SetText(FText::Format(MoneyFormatString, InventoryComponent->GetMoney()));
+    }
+    if (WeightTextBlock)
+    {
+        WeightTextBlock->SetText(
+            FText::Format(WeightFormatString, InventoryComponent->GetCurrentWeight(), InventoryComponent->MaxWeight)
+        );
     }
 
-    CurrentWeightDisplay = InventoryComponent->GetCurrentWeight();
+    // Update the inventory slots
+    InventorySlotsContainer->SetListItems<UInventorySlotData*>(InventoryComponent->GetAllSlotData());
 }
 
-void UInventoryUIBase::OnInventoryUpdated()
-{
-    // Update existing slot widgets without recreating them
-    if (InventoryComponent)
-    {
-        for (int32 i = 0; i < SlotWidgets.Num() && i < InventoryComponent->Slots.Num(); i++)
-        {
-            if (SlotWidgets[i])
-            {
-                SlotWidgets[i]->UpdateSlot(InventoryComponent->Slots[i]);
-            }
-        }
-
-        CurrentWeightDisplay = InventoryComponent->GetCurrentWeight();
-    }
-}
+void UInventoryUIBase::OnInventoryUpdated() { RefreshInventory(); }

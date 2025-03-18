@@ -2,6 +2,10 @@
 
 #include "Inventory/InventoryComponent.h"
 
+#include "Inventory/InventorySlotData.h"
+
+bool FInventorySlot::IsValid() const { return Item != nullptr && Count > 0; }
+
 UInventoryComponent::UInventoryComponent(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
 {
     PrimaryComponentTick.bCanEverTick = false;
@@ -155,6 +159,19 @@ bool UInventoryComponent::CanAddItem(UInventoryItemBase* Item, int32 Count) cons
     return false;
 }
 
+int32 UInventoryComponent::GetNumFreeSlots() const
+{
+    int32 Result = 0;
+    for (const FInventorySlot& Slot : Slots)
+    {
+        if (!Slot.Item || Slot.Count <= 0)
+        {
+            ++Result;
+        }
+    }
+    return Result;
+}
+
 float UInventoryComponent::GetCurrentWeight() const
 {
     float TotalWeight = 0.0f;
@@ -240,22 +257,48 @@ bool UInventoryComponent::SwapSlots(int32 SourceSlotIndex, int32 TargetSlotIndex
 
     // Swap the slots
     const FInventorySlot TempSlot = Slots[SourceSlotIndex];
-    Slots[SourceSlotIndex]  = Slots[TargetSlotIndex];
-    Slots[TargetSlotIndex]  = TempSlot;
+    Slots[SourceSlotIndex]        = Slots[TargetSlotIndex];
+    Slots[TargetSlotIndex]        = TempSlot;
 
     OnInventoryUpdated.Broadcast();
     return true;
 }
 
-bool UInventoryComponent::GetSlot(int32 SlotIndex, FInventorySlot& OutSlot) const
+FInventorySlot UInventoryComponent::GetSlot(int32 SlotIndex) const
 {
     if (SlotIndex < 0 || SlotIndex >= Slots.Num())
     {
-        return false;
+        return FInventorySlot{};
     }
 
-    OutSlot = Slots[SlotIndex];
-    return true;
+    return Slots[SlotIndex];
+}
+UInventorySlotData* UInventoryComponent::GetSlotData(int32 SlotIndex)
+{
+    if (FInventorySlot InventorySlot = GetSlot(SlotIndex); InventorySlot.IsValid())
+    {
+        UInventorySlotData* Result = NewObject<UInventorySlotData>();
+        Result->SlotIndex          = SlotIndex;
+        Result->Item               = InventorySlot.Item;
+        Result->Count              = InventorySlot.Count;
+        Result->InventoryComponent = this;
+        return Result;
+    }
+    return nullptr;
+}
+
+TArray<UInventorySlotData*> UInventoryComponent::GetAllSlotData()
+{
+    TArray<UInventorySlotData*> Result;
+
+    for (int32 i = 0; i < Slots.Num(); i++)
+    {
+        if (UInventorySlotData* SlotData = GetSlotData(i))
+        {
+            Result.Add(SlotData);
+        }
+    }
+    return Result;
 }
 
 int32 UInventoryComponent::FindIndexOfExistingStack(const UInventoryItemBase* Item, bool bAllowFullStack) const

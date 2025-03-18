@@ -7,10 +7,14 @@
 #include "InventoryItemBase.h"
 #include "InventoryComponent.generated.h"
 
+
+class UInventorySlotData;
 USTRUCT(BlueprintType)
 struct FInventorySlot
 {
     GENERATED_BODY()
+
+    bool IsValid() const;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Inventory")
     TObjectPtr<UInventoryItemBase> Item = nullptr;
@@ -69,6 +73,10 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     bool CanAddItem(UInventoryItemBase* Item, int32 Count = 1) const;
 
+    // Get the number of free slots
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    int32 GetNumFreeSlots() const;
+
     // Get the current weight of the inventory
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     float GetCurrentWeight() const;
@@ -87,7 +95,13 @@ public:
 
     // Get a slot by index
     UFUNCTION(BlueprintCallable, Category = "Inventory")
-    bool GetSlot(int32 SlotIndex, FInventorySlot& OutSlot) const;
+    FInventorySlot GetSlot(int32 SlotIndex) const;
+
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    UInventorySlotData* GetSlotData(int32 SlotIndex);
+
+    UFUNCTION(BlueprintCallable, Category = "Inventory")
+    TArray<UInventorySlotData*> GetAllSlotData();
 
     // Helper function to find existing stacks of an item
     UFUNCTION(BlueprintCallable, Category = "Inventory")

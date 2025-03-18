@@ -5,21 +5,23 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "Blueprint/IUserObjectListEntry.h"
 #include "Blueprint/UserWidget.h"
 #include "Inventory/InventoryComponent.h"
-#include "InventorySlotWidgetBase.generated.h"
+#include "InventorySlotWidget.generated.h"
 
 class UImage;
 class UTextBlock;
 class UButton;
 
 UCLASS()
-class INKLAB_API UInventorySlotWidgetBase : public UUserWidget
+class INKLAB_API UInventorySlotWidget : public UUserWidget, public IUserObjectListEntry
 {
     GENERATED_BODY()
 
 public:
-    explicit UInventorySlotWidgetBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+    explicit UInventorySlotWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
     virtual void SynchronizeProperties() override;
 
     UPROPERTY(BlueprintReadWrite)
@@ -32,16 +34,7 @@ public:
     TObjectPtr<UButton> SlotButton;
 
     UPROPERTY(BlueprintReadOnly, Category = "Inventory")
-    TObjectPtr<UInventoryComponent> InventoryRef;
-
-    UPROPERTY(BlueprintReadOnly, Category = "Inventory")
-    int32 SlotIndex{0};
-
-    UPROPERTY(BlueprintReadOnly, Category = "Inventory")
-    FInventorySlot CurrentSlot;
-
-    UFUNCTION(BlueprintCallable, Category = "Inventory")
-    void UpdateSlot(const FInventorySlot& NewSlot);
+    TObjectPtr<const UInventorySlotData> SlotData;
 
     UFUNCTION(BlueprintCallable, Category = "Inventory")
     void UseItem();
@@ -54,9 +47,13 @@ public:
     bool StartDrag();
 
     UFUNCTION(BlueprintCallable, Category = "Inventory")
-    bool ReceiveDrop(UInventorySlotWidgetBase* DraggedSlot);
+    bool ReceiveDrop(UInventorySlotWidget* DraggedSlot);
 
 protected:
+    // -- IUserObjectListEntry
+    virtual void NativeOnListItemObjectSet(UObject* ListItemObject) override;
+    // --
+
     virtual void NativeConstruct() override;
 
     UFUNCTION()

@@ -59,8 +59,8 @@ UMerchantComponent::BuyItemFromPlayer(UInventoryComponent* PlayerInventory, int3
         return ESalesResult::BadSalesAttempt;
     }
 
-    FInventorySlot PlayerSlot;
-    if (!PlayerInventory->GetSlot(PlayerSlotIndex, PlayerSlot) || !PlayerSlot.Item || PlayerSlot.Count < Count)
+    FInventorySlot PlayerSlot = PlayerInventory->GetSlot(PlayerSlotIndex);
+    if (!PlayerSlot.IsValid() || !PlayerSlot.Item || PlayerSlot.Count < Count)
     {
         return ESalesResult::NotAvailable;
     }
@@ -91,8 +91,6 @@ UMerchantComponent::BuyItemFromPlayer(UInventoryComponent* PlayerInventory, int3
     {
         return ESalesResult::MerchantHasNoSpace;
     }
-
-    return ESalesResult::UnknownError;
 }
 
 ESalesResult
@@ -104,9 +102,8 @@ UMerchantComponent::SellItemToPlayer(UInventoryComponent* PlayerInventory, int32
         return ESalesResult::BadSalesAttempt;
     }
 
-    FInventorySlot MerchantSlot;
-    if (!MerchantInventory->GetSlot(MerchantSlotIndex, MerchantSlot) || !MerchantSlot.Item
-        || MerchantSlot.Count < Count)
+    FInventorySlot MerchantSlot = MerchantInventory->GetSlot(MerchantSlotIndex);
+    if (!MerchantSlot.IsValid() || !MerchantSlot.Item || MerchantSlot.Count < Count)
     {
         return ESalesResult::NotAvailable;
     }
@@ -137,8 +134,6 @@ UMerchantComponent::SellItemToPlayer(UInventoryComponent* PlayerInventory, int32
     {
         return ESalesResult::PlayerHasNoSpace;
     }
-
-    return ESalesResult::UnknownError;
 }
 
 int32 UMerchantComponent::GetBuyPriceForItem(UInventoryItemBase* Item, int32 Count) const
