@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "InkLabHUDWidget.generated.h"
 
+
+class UInventoryWidget;
+class UInventoryComponent;
 class UReticleWidget;
 class UInteractionPromptWidget;
 class UWidget;
@@ -41,6 +44,14 @@ public:
     UFUNCTION(BlueprintCallable, Category = "HUD|Reticle")
     void HideReticle() const;
 
+    // Set the data required by the inventory UI
+    UFUNCTION(BlueprintCallable, Category = "HUD|Interaction")
+    void InitializeInventoryPanelData(UInventoryComponent* InventoryComponent) const;
+
+    // Refresh the inventory in the UI
+    UFUNCTION(BlueprintCallable, Category = "HUD|Interaction")
+    void RefreshInventoryData();
+
     // Checks whether the inventory UI is visible
     UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
     bool IsInventoryPanelVisible() const;
@@ -53,8 +64,13 @@ public:
     UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
     void HideInventoryPanel();
 
+    // Toggle the inventory UI (useful for binding to keypress)
     UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
     void ToggleInventoryPanel();
+
+    // Update the data of the inventory panel
+    UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
+    void UpdateInventoryData();
 
     // Shows a dialogue panel
     UFUNCTION(BlueprintCallable, Category = "HUD|Dialogue")
@@ -73,9 +89,9 @@ protected:
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
     TObjectPtr<UCanvasPanel> RootCanvas;
 
-    // Container for inventory UI
+    // References to dynamically created widgets
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-    TObjectPtr<UOverlay> InventoryContainer;
+    TObjectPtr<UInventoryWidget> InventoryWidget;
 
     // Container for dialogue UI
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
@@ -96,10 +112,6 @@ protected:
     // Class to use for inventory widget
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HUD|Configuration")
     TSubclassOf<UUserWidget> InventoryWidgetClass;
-
-    // References to dynamically created widgets
-    UPROPERTY()
-    TObjectPtr<UUserWidget> CurrentInventoryWidget;
 
     UPROPERTY()
     TObjectPtr<UUserWidget> CurrentDialogueWidget;

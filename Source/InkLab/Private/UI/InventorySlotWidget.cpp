@@ -75,6 +75,7 @@ bool UInventorySlotWidget::ReceiveDrop(UInventorySlotWidget* DraggedSlot)
         return DraggedInventoryComponent->TransferItem(TargetInventoryComponent, DraggedSlotIndex, DraggedSlotCount);
     }
 }
+
 void UInventorySlotWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
 {
     IUserObjectListEntry::NativeOnListItemObjectSet(ListItemObject);
@@ -82,7 +83,13 @@ void UInventorySlotWidget::NativeOnListItemObjectSet(UObject* ListItemObject)
     {
         SlotData = NewSlotData;
 
-        if (ItemCount)
+        if (NewSlotData->Item && NewSlotData->Item->Icon)
+        {
+            ItemIcon = NewSlotData->Item->Icon;
+            UpdateButtonStyle();
+        }
+
+        if (ensure(ItemCount))
         {
             if (SlotData->Item && SlotData->Count > 1)
             {

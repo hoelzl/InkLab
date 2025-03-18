@@ -7,6 +7,7 @@
 #include "Components/OverlaySlot.h"
 #include "Components/TextBlock.h"
 #include "UI/InteractionPromptWidget.h"
+#include "UI/InventoryWidget.h"
 #include "UI/ReticleWidget.h"
 
 UInkLabHUDWidget::UInkLabHUDWidget(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer} {}
@@ -21,9 +22,9 @@ void UInkLabHUDWidget::NativeConstruct()
         InteractionPrompt->SetVisibility(ESlateVisibility::Hidden);
     }
 
-    if (InventoryContainer)
+    if (InventoryWidget)
     {
-        InventoryContainer->SetVisibility(ESlateVisibility::Hidden);
+        InventoryWidget->Hide();
     }
 
     if (DialogueContainer)
@@ -75,41 +76,39 @@ void UInkLabHUDWidget::HideReticle() const
         ReticleWidget->Hide();
     }
 }
+void UInkLabHUDWidget::InitializeInventoryPanelData(UInventoryComponent* InventoryComponent) const
+{
+    if (ensure(InventoryComponent) && ensure(InventoryWidget))
+    {
+        InventoryWidget->InventoryComponent = InventoryComponent;
+        InventoryWidget->RefreshInventory();
+    }
+}
+void UInkLabHUDWidget::RefreshInventoryData()
+{
+    if (ensure(InventoryWidget))
+    {
+        InventoryWidget->RefreshInventory();
+    }
+}
 
 bool UInkLabHUDWidget::IsInventoryPanelVisible() const
 {
-    if (ensure(InventoryContainer))
+    if (ensure(InventoryWidget))
     {
-        return InventoryContainer->IsVisible();
+        return InventoryWidget->IsVisible();
     }
     return false;
 }
 
 void UInkLabHUDWidget::ShowInventoryPanel()
 {
-    if (!ensure(InventoryContainer))
+    if (!ensure(InventoryWidget))
     {
         return;
     }
 
-    // Create inventory widget if it doesn't exist
-    if (!CurrentInventoryWidget && InventoryWidgetClass)
-    {
-        CurrentInventoryWidget = CreateWidget<UUserWidget>(this, InventoryWidgetClass);
-        if (CurrentInventoryWidget)
-        {
-            InventoryContainer->AddChild(CurrentInventoryWidget);
-
-            // Configure overlay slot to fill parent
-            if (UOverlaySlot* OverlaySlot = Cast<UOverlaySlot>(CurrentInventoryWidget->Slot))
-            {
-                OverlaySlot->SetHorizontalAlignment(HAlign_Fill);
-                OverlaySlot->SetVerticalAlignment(VAlign_Fill);
-            }
-        }
-    }
-
-    InventoryContainer->SetVisibility(ESlateVisibility::Visible);
+    InventoryWidget->SetVisibility(ESlateVisibility::Visible);
 
     // Enable UI input when inventory is open
     if (APlayerController* PC = GetOwningPlayer())
@@ -121,12 +120,12 @@ void UInkLabHUDWidget::ShowInventoryPanel()
 
 void UInkLabHUDWidget::HideInventoryPanel()
 {
-    if (!ensure(InventoryContainer))
+    if (!ensure(InventoryWidget))
     {
         return;
     }
 
-    InventoryContainer->SetVisibility(ESlateVisibility::Hidden);
+    InventoryWidget->SetVisibility(ESlateVisibility::Hidden);
 
     // Enable gameplay input when inventory is closed
     if (APlayerController* PC = GetOwningPlayer())
@@ -144,6 +143,13 @@ void UInkLabHUDWidget::ToggleInventoryPanel()
     else
     {
         ShowInventoryPanel();
+    }
+}
+void UInkLabHUDWidget::UpdateInventoryData()
+{
+    if (ensure(InventoryWidget))
+    {
+        InventoryWidget->RefreshInventory();
     }
 }
 

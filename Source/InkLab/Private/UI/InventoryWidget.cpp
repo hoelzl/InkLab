@@ -1,43 +1,43 @@
 ﻿// Copyright Dr. Matthias Hölzl
 
-#include "UI/InventoryUIBase.h"
+#include "UI/InventoryWidget.h"
 
 #include "Components/TileView.h"
 #include "Inventory/InventorySlotData.h"
 #include "UI/InventorySlotWidget.h"
 
-UInventoryUIBase::UInventoryUIBase(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer} {}
+UInventoryWidget::UInventoryWidget(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer} {}
 
-void UInventoryUIBase::NativeConstruct()
+void UInventoryWidget::NativeConstruct()
 {
     Super::NativeConstruct();
 
     if (InventoryComponent)
     {
-        InventoryComponent->OnInventoryUpdated.AddDynamic(this, &UInventoryUIBase::OnInventoryUpdated);
+        InventoryComponent->OnInventoryUpdated.AddDynamic(this, &UInventoryWidget::OnInventoryUpdated);
         RefreshInventory();
     }
 }
 
-void UInventoryUIBase::SetInventoryComponent(UInventoryComponent* NewInventoryComponent)
+void UInventoryWidget::SetInventoryComponent(UInventoryComponent* NewInventoryComponent)
 {
     if (InventoryComponent)
     {
-        InventoryComponent->OnInventoryUpdated.RemoveDynamic(this, &UInventoryUIBase::OnInventoryUpdated);
+        InventoryComponent->OnInventoryUpdated.RemoveDynamic(this, &UInventoryWidget::OnInventoryUpdated);
     }
 
     InventoryComponent = NewInventoryComponent;
 
     if (InventoryComponent)
     {
-        InventoryComponent->OnInventoryUpdated.AddDynamic(this, &UInventoryUIBase::OnInventoryUpdated);
+        InventoryComponent->OnInventoryUpdated.AddDynamic(this, &UInventoryWidget::OnInventoryUpdated);
         RefreshInventory();
     }
 }
 
-void UInventoryUIBase::RefreshInventory()
+void UInventoryWidget::RefreshInventory()
 {
-    if (!InventoryComponent || !InventorySlotsContainer)
+    if (!InventoryComponent || !InventoryTileView)
     {
         return;
     }
@@ -60,7 +60,7 @@ void UInventoryUIBase::RefreshInventory()
     }
 
     // Update the inventory slots
-    InventorySlotsContainer->SetListItems<UInventorySlotData*>(InventoryComponent->GetAllSlotData());
+    InventoryTileView->SetListItems<UInventorySlotData*>(InventoryComponent->GetAllSlotData());
 }
 
-void UInventoryUIBase::OnInventoryUpdated() { RefreshInventory(); }
+void UInventoryWidget::OnInventoryUpdated() { RefreshInventory(); }

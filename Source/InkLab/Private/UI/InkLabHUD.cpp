@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Interaction/InteractionSourceComponent.h"
 #include "Interaction/InteractionTargetComponent.h"
+#include "Inventory/InventoryComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "UI/InkLabHUDWidget.h"
 
@@ -23,28 +24,34 @@ AInkLabHUD::AInkLabHUD(const FObjectInitializer& ObjectInitializer) : Super{Obje
     }
 }
 
-void AInkLabHUD::BeginPlay()
-{
-    Super::BeginPlay();
-
-    // Create and add the HUD to the viewport
-    CreateHUD();
-}
-
-void AInkLabHUD::SetupInteractionListeners(UInteractionSourceComponent* InteractionSource)
+void AInkLabHUD::SetupInteractionListeners(UInteractionSourceComponent* NewInteractionSource)
 {
     RemoveInteractionListeners();
 
-    CurrentInteractionSource = InteractionSource;
+    InteractionSourceComponent = NewInteractionSource;
 
-    if (CurrentInteractionSource)
+    if (InteractionSourceComponent)
     {
-        InteractionSource->OnInteractionTargetFound.AddDynamic(this, &AInkLabHUD::OnInteractionTargetFound);
-        InteractionSource->OnInteractionTargetLost.AddDynamic(this, &AInkLabHUD::OnInteractionTargetLost);
+        InteractionSourceComponent->OnInteractionTargetFound.AddDynamic(this, &AInkLabHUD::OnInteractionTargetFound);
+        InteractionSourceComponent->OnInteractionTargetLost.AddDynamic(this, &AInkLabHUD::OnInteractionTargetLost);
     }
 }
 
-void AInkLabHUD::SetupInventoryListeners(UInventoryComponent* InventoryComponent) {}
+void AInkLabHUD::SetupInventoryListeners(UInventoryComponent* NewInventoryComponent)
+{
+    RemoveInventoryListeners();
+
+    InventoryComponent = NewInventoryComponent;
+
+    if (InventoryComponent)
+    {
+        if (ensure(HUDWidget))
+        {
+            HUDWidget->InitializeInventoryPanelData(InventoryComponent);
+        }
+        InventoryComponent->OnInventoryUpdated.AddDynamic(this, &AInkLabHUD::OnInventoryUpdated);
+    }
+}
 
 void AInkLabHUD::CreateHUD()
 {
@@ -62,6 +69,7 @@ void AInkLabHUD::CreateHUD()
     HUDWidget = CreateWidget<UInkLabHUDWidget>(PC, HUDWidgetClass);
     if (HUDWidget)
     {
+        InitializeWidgetInventoryData(PC);
         HUDWidget->AddToViewport(0); // Add at lowest Z-order so it's behind everything else
     }
 }
@@ -140,19 +148,46 @@ void AInkLabHUD::OnInteractionTargetLost()
         HUDWidget->HideInteractionPrompt();
     }
 }
+void AInkLabHUD::OnInventoryUpdated()
+{
+    if (HUDWidget)
+    {
+        HUDWidget->RefreshInventoryData();
+    }
+}
+
 void AInkLabHUD::BeginDestroy()
 {
     RemoveInteractionListeners();
-    CurrentInteractionSource = nullptr;
+    InteractionSourceComponent = nullptr;
 
     Super::BeginDestroy();
 }
 
 void AInkLabHUD::RemoveInteractionListeners()
 {
-    if (CurrentInteractionSource)
+    if (InteractionSourceComponent)
     {
-        CurrentInteractionSource->OnInteractionTargetFound.RemoveDynamic(this, &AInkLabHUD::OnInteractionTargetFound);
-        CurrentInteractionSource->OnInteractionTargetLost.RemoveDynamic(this, &AInkLabHUD::OnInteractionTargetLost);
+        InteractionSourceComponent->OnInteractionTargetFound.RemoveDynamic(this, &AInkLabHUD::OnInteractionTargetFound);
+        InteractionSourceComponent->OnInteractionTargetLost.RemoveDynamic(this, &AInkLabHUD::OnInteractionTargetLost);
+    }
+}
+
+void AInkLabHUD::InitializeWidgetInventoryData(const APlayerController* PC) const
+{
+    // if (const AInkLabCharacter* Character = PC->GetPawn<AInkLabCharacter>(); ensure(Character))
+    // {
+    //     if (UInventoryComponent* InventoryComponent = Character->GetInventoryComponent(); ensure(InventoryComponent))
+    //     {
+    //         HUDWidget->InitializeInventoryPanelData(InventoryComponent);
+    //     }
+    // }
+}
+
+void AInkLabHUD::RemoveInventoryListeners()
+{
+    if (InventoryComponent)
+    {
+        InventoryComponent->OnInventoryUpdated.RemoveDynamic(this, &AInkLabHUD::OnInventoryUpdated);
     }
 }

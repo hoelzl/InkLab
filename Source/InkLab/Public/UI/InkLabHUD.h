@@ -27,15 +27,16 @@ class INKLAB_API AInkLabHUD : public AHUD
 public:
     explicit AInkLabHUD(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-    virtual void BeginPlay() override;
+    // Creates the HUD widget and adds it to the viewport
+    void CreateHUD();
 
     // Initialize connections to interaction system
     UFUNCTION(BlueprintCallable, Category = "HUD|Initialization")
-    void SetupInteractionListeners(UInteractionSourceComponent* InteractionSource);
+    void SetupInteractionListeners(UInteractionSourceComponent* NewInteractionSource);
 
     // Initialize connections to inventory system
     UFUNCTION(BlueprintCallable, Category = "HUD|Initialization")
-    void SetupInventoryListeners(UInventoryComponent* InventoryComponent);
+    void SetupInventoryListeners(UInventoryComponent* NewInventoryComponent);
 
     // Reference to the created HUD widget
     UPROPERTY(BlueprintReadOnly, Category = "HUD")
@@ -74,19 +75,24 @@ public:
     void ShowQuestNotification(const FText& QuestText, float Duration = 3.0f);
 
 protected:
-    // Creates the HUD widget and adds it to the viewport
-    void CreateHUD();
-
     UFUNCTION()
     void OnInteractionTargetFound(UInteractionTargetComponent* Target);
 
     UFUNCTION()
     void OnInteractionTargetLost();
 
+    UFUNCTION()
+    void OnInventoryUpdated();
+
     virtual void BeginDestroy() override;
 
     void RemoveInteractionListeners();
+    void InitializeWidgetInventoryData(const APlayerController* PC) const;
+    void RemoveInventoryListeners();
 
     UPROPERTY()
-    TObjectPtr<UInteractionSourceComponent> CurrentInteractionSource;
+    TObjectPtr<UInteractionSourceComponent> InteractionSourceComponent;
+
+    UPROPERTY()
+    TObjectPtr<UInventoryComponent> InventoryComponent;
 };

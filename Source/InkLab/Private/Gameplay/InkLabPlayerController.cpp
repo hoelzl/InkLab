@@ -12,13 +12,15 @@ void AInkLabPlayerController::BeginPlay()
 {
     Super::BeginPlay();
 
-    AInkLabHUD* InkLabHUD                   = Cast<AInkLabHUD>(GetHUD());
+    AInkLabHUD* InkLabHUD                   = GetHUD<AInkLabHUD>();
     const AInkLabCharacter* InkLabCharacter = GetPawn<AInkLabCharacter>();
 
     if (!ensure(InkLabHUD) || !ensure(InkLabCharacter))
     {
         return;
     }
+
+    InkLabHUD->CreateHUD();
 
     if (UInteractionSourceComponent* InteractionSource =
             InkLabCharacter->FindComponentByClass<UInteractionSourceComponent>();

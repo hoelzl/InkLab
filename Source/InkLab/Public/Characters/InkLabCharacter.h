@@ -27,10 +27,14 @@ class AInkLabCharacter : public ACharacter
 public:
     explicit AInkLabCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+    /** Return the InteractionSource subobject */
+    FORCEINLINE UInteractionSourceComponent* GetInteractionSource() const { return InteractionSource; }
+    /** Return the Inventory subobject */
+    FORCEINLINE UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }
     /** Returns CameraBoom subobject **/
-    FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+    FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     /** Returns FollowCamera subobject **/
-    FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+    FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 protected:
     /** Called for movement input */

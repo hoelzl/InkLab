@@ -275,7 +275,7 @@ FInventorySlot UInventoryComponent::GetSlot(int32 SlotIndex) const
 }
 UInventorySlotData* UInventoryComponent::GetSlotData(int32 SlotIndex)
 {
-    if (FInventorySlot InventorySlot = GetSlot(SlotIndex); InventorySlot.IsValid())
+    if (const FInventorySlot InventorySlot = GetSlot(SlotIndex); InventorySlot.IsValid())
     {
         UInventorySlotData* Result = NewObject<UInventorySlotData>();
         Result->SlotIndex          = SlotIndex;

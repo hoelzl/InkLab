@@ -8,7 +8,7 @@
 #include "InkLabUserWidget.h"
 #include "Inventory/InventoryComponent.h"
 
-#include "InventoryUIBase.generated.h"
+#include "InventoryWidget.generated.h"
 
 
 class UTileView;
@@ -16,15 +16,15 @@ class UInventorySlotWidget;
 class UWrapBox;
 
 UCLASS()
-class INKLAB_API UInventoryUIBase : public UInkLabUserWidget
+class INKLAB_API UInventoryWidget : public UInkLabUserWidget
 {
     GENERATED_BODY()
 
 public:
-    explicit UInventoryUIBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+    explicit UInventoryWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-    TObjectPtr<UTileView> InventorySlotsContainer;
+    TObjectPtr<UTileView> InventoryTileView;
 
     UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
     TObjectPtr<UTextBlock> WeightTextBlock;
