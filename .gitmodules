@@ -1,0 +1,4 @@
+[submodule "Plugins/Inkpot"]
+	path = Plugins/Inkpot
+	url = https://github.com/hoelzl/Inkpot.git
+	branch = local

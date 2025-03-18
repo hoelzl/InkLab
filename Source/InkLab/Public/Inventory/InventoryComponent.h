@@ -9,6 +9,7 @@
 
 
 class UInventorySlotData;
+
 USTRUCT(BlueprintType)
 struct FInventorySlot
 {

@@ -3,6 +3,7 @@
 
 #include "Characters/InkLabCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Characters/LoadoutTableRow.h"
 #include "Components/CapsuleComponent.h"
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
@@ -65,6 +66,18 @@ AInkLabCharacter::AInkLabCharacter(const FObjectInitializer& ObjectInitializer) 
 
     // Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character)
     // are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+}
+
+void AInkLabCharacter::BeginPlay()
+{
+    Super::BeginPlay();
+    if (InitialLoadout && ensure(InventoryComponent))
+    {
+        InitialLoadout->ForeachRow<FLoadoutTableRow>(
+            FString{"Text"}, [this](const FName& Key, const FLoadoutTableRow& Loadout)
+            { InventoryComponent->AddItem(Loadout.Item, Loadout.Count); }
+        );
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -162,7 +175,9 @@ void AInkLabCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Started, this, &AInkLabCharacter::Interact);
 
         // Toggling the interaction panel
-        EnhancedInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Started, this, &AInkLabCharacter::ToggleInventory);
+        EnhancedInputComponent->BindAction(
+            ToggleInventoryAction, ETriggerEvent::Started, this, &AInkLabCharacter::ToggleInventory
+        );
     }
     else
     {

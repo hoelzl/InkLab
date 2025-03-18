@@ -10,6 +10,6 @@ public class InkLabEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_5;
-		ExtraModuleNames.Add("InkLab");
+		ExtraModuleNames.AddRange(new string[] {"InkLab", "InkLabEditor"});
 	}
 }
