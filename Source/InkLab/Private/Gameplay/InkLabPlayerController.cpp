@@ -4,9 +4,15 @@
 #include "Gameplay/InkLabPlayerController.h"
 
 #include "Characters/InkLabCharacter.h"
+#include "Dialogue/DialogueComponent.h"
 #include "Interaction/InteractionSourceComponent.h"
 #include "Inventory/InventoryComponent.h"
 #include "UI/InkLabHUD.h"
+
+AInkLabPlayerController::AInkLabPlayerController(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
+{
+    DialogueComponent = CreateDefaultSubobject<UDialogueComponent>("DialogueComponent");
+}
 
 void AInkLabPlayerController::BeginPlay()
 {

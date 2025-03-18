@@ -8,13 +8,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="009dbfdd-7a72-46ce-82ea-9224c8a4c1d0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Source/InkLab/Private/UI/DialogueChoiceWidget.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/InkLab/Private/UI/DialogueWidget.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/InkLabEditor/InkLabEditor.Build.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/InkLabEditor/Private/InkLabEditor.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Source/InkLabEditor/Public/InkLabEditor.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/InkLab/Private/Dialogue/DialogueComponent.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/InkLab/Private/Dialogue/DialogueComponent.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Source/InkLab/Public/UI/DialogueChoiceWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/InkLab/Public/UI/DialogueChoiceWidget.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Content/UI/Widgets/Dialogue/WBP_DialogueChoice.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.InkLab.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InkLab.dir/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/Blueprints/Characters/BP_ThirdPersonCharacter.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/Blueprints/Characters/BP_ThirdPersonCharacter.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Content/UI/Widgets/HUD/WBP_InkLabHUDWidget.uasset" beforeDir="false" afterPath="$PROJECT_DIR$/Content/UI/Widgets/HUD/WBP_InkLabHUDWidget.uasset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/InkLab/Private/Gameplay/InkLabPlayerController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/InkLab/Private/Gameplay/InkLabPlayerController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/InkLab/Private/UI/InkLabHUD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/InkLab/Private/UI/InkLabHUD.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/InkLab/Private/UI/InkLabHUDWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Source/InkLab/Private/UI/InkLabHUDWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/InkLab/Public/Gameplay/InkLabPlayerController.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/InkLab/Public/Gameplay/InkLabPlayerController.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/InkLab/Public/UI/DialogueWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/InkLab/Public/UI/DialogueWidget.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/InkLab/Public/UI/InkLabHUD.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/InkLab/Public/UI/InkLabHUD.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Source/InkLab/Public/UI/InkLabHUDWidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/Source/InkLab/Public/UI/InkLabHUDWidget.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,17 +44,20 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="cidr-memory-view://0" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://DialogueChoiceWidget.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://DialogueChoiceWidget.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://DialogueWidget.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://DialogueWidget.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://DialogueWidget.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="cidr-memory-view://4" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://F:/Epic/Launcher/UE_5.5/Engine/Source/Developer/TraceAnalysis/TraceAnalysis.Build.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://F:/Epic/Launcher/UE_5.5/Engine/Source/Editor/CurveEditor/Public/Tree/CurveEditorTreeTraits.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://F:/Epic/Launcher/UE_5.5/Engine/Source/Editor/Kismet/Private/SBlueprintPalette.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://F:/Epic/Launcher/UE_5.5/Engine/Source/Editor/UnrealEd/Public/SEditorViewport.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://F:/Epic/Launcher/UE_5.5/Engine/Source/Runtime/Core/Private/Windows/WindowsPlatformProcess.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://F:/Epic/Launcher/UE_5.5/Engine/Source/Runtime/CoreUObject/Public/UObject/Object.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://G:/Unreal/Projects/Tests/InkLab/Source/InkLab/Private/UI/InkLabHUDWidget.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://G:/Unreal/Projects/Tests/InkLab/Source/InkLab/Private/UI/InkLabHUDWidget.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://InkLabEditor.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://F:/Epic/Launcher/UE_5.5/Engine/Source/Runtime/D3D12RHI/Private/D3D12StateCache.cpp" root0="FORCE_HIGHLIGHTING" />
   </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 7
@@ -150,14 +157,6 @@
         <option name="Build" />
       </method>
     </configuration>
-    <configuration default="true" type="Uproject" factoryName="rider.uproject">
-      <option name="DEFAULT_PROJECT_PATH" value="" />
-      <option name="PROJECT_FILE_PATH" value="" />
-      <option name="AUTO_SELECT_PRIORITY" value="0" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -169,13 +168,19 @@
       <updated>1742329477414</updated>
       <workItem from="1742329479472" duration="316000" />
       <workItem from="1742329827517" duration="555000" />
+      <workItem from="1742330422493" duration="2821000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="UnrealLogPanelSettings">
+    <option name="clearOnStart" value="true" />
+    <option name="showMessages" value="false" />
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>

@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "Blueprint/UserWidget.h"
+#include "InkLabUserWidget.h"
 #include "DialogueWidget.generated.h"
 
 
@@ -14,7 +16,7 @@ class UTextBlock;
  * Widget for displaying a Dialogue
  */
 UCLASS()
-class INKLAB_API UDialogueWidget : public UUserWidget
+class INKLAB_API UDialogueWidget : public UInkLabUserWidget
 {
     GENERATED_BODY()
 

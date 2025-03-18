@@ -4,8 +4,8 @@
 
 #include "UI/InkLabHUDWidget.h"
 #include "Components/Overlay.h"
-#include "Components/OverlaySlot.h"
 #include "Components/TextBlock.h"
+#include "UI/DialogueWidget.h"
 #include "UI/InteractionPromptWidget.h"
 #include "UI/InventoryWidget.h"
 #include "UI/ReticleWidget.h"
@@ -27,9 +27,9 @@ void UInkLabHUDWidget::NativeConstruct()
         InventoryWidget->Hide();
     }
 
-    if (DialogueContainer)
+    if (DialogueWidget)
     {
-        DialogueContainer->SetVisibility(ESlateVisibility::Hidden);
+        DialogueWidget->Hide();
     }
 
     if (QuestNotificationContainer)
@@ -77,6 +77,7 @@ void UInkLabHUDWidget::InitializeInventoryPanelData(UInventoryComponent* Invento
         InventoryWidget->RefreshInventory();
     }
 }
+
 void UInkLabHUDWidget::RefreshInventoryData()
 {
     if (InventoryWidget)
@@ -102,31 +103,20 @@ void UInkLabHUDWidget::ShowInventoryPanel()
     }
 
     InventoryWidget->SetVisibility(ESlateVisibility::Visible);
-
-    // Enable UI input when inventory is open
-    if (APlayerController* PC = GetOwningPlayer())
-    {
-        PC->SetInputMode(FInputModeGameAndUI());
-        PC->SetShowMouseCursor(true);
-    }
+    SetInputModeForInteraction();
 }
 
 void UInkLabHUDWidget::HideInventoryPanel()
 {
-    if (!ensure(InventoryWidget))
+    if (!InventoryWidget)
     {
         return;
     }
 
     InventoryWidget->SetVisibility(ESlateVisibility::Hidden);
-
-    // Enable gameplay input when inventory is closed
-    if (APlayerController* PC = GetOwningPlayer())
-    {
-        PC->SetInputMode(FInputModeGameOnly());
-        PC->SetShowMouseCursor(false);
-    }
+    SetInputModeForGameplay();
 }
+
 void UInkLabHUDWidget::ToggleInventoryPanel()
 {
     if (IsInventoryPanelVisible())
@@ -138,66 +128,25 @@ void UInkLabHUDWidget::ToggleInventoryPanel()
         ShowInventoryPanel();
     }
 }
-void UInkLabHUDWidget::UpdateInventoryData()
-{
-    if (InventoryWidget)
-    {
-        InventoryWidget->RefreshInventory();
-    }
-}
 
-void UInkLabHUDWidget::ShowDialoguePanel(UWidget* DialogueWidget)
+void UInkLabHUDWidget::ShowDialoguePanel()
 {
-    if (!DialogueContainer || !DialogueWidget)
+    if (!ensure(DialogueWidget))
     {
         return;
     }
-
-    // Remove any existing dialogue widget
-    if (CurrentDialogueWidget)
-    {
-        CurrentDialogueWidget->RemoveFromParent();
-    }
-
-    // Set the new dialogue widget
-    CurrentDialogueWidget = Cast<UUserWidget>(DialogueWidget);
-    if (CurrentDialogueWidget)
-    {
-        DialogueContainer->AddChild(CurrentDialogueWidget);
-
-        // Configure overlay slot to fill parent
-        if (UOverlaySlot* OverlaySlot = Cast<UOverlaySlot>(CurrentDialogueWidget->Slot))
-        {
-            OverlaySlot->SetHorizontalAlignment(HAlign_Fill);
-            OverlaySlot->SetVerticalAlignment(VAlign_Fill);
-        }
-
-        DialogueContainer->SetVisibility(ESlateVisibility::Visible);
-
-        // Enable UI input mode when dialogue is active
-        if (APlayerController* PC = GetOwningPlayer())
-        {
-            PC->SetInputMode(FInputModeGameAndUI());
-            PC->SetShowMouseCursor(true);
-        }
-    }
+    DialogueWidget->Show();
+    SetInputModeForInteraction();
 }
 
 void UInkLabHUDWidget::HideDialoguePanel()
 {
-    if (!DialogueContainer)
+    if (!DialogueWidget)
     {
         return;
     }
-
-    DialogueContainer->SetVisibility(ESlateVisibility::Hidden);
-
-    // Reset input mode when dialogue closes
-    if (APlayerController* PC = GetOwningPlayer())
-    {
-        PC->SetInputMode(FInputModeGameOnly());
-        PC->SetShowMouseCursor(false);
-    }
+    DialogueWidget->Hide();
+    SetInputModeForGameplay();
 }
 
 void UInkLabHUDWidget::ShowQuestNotification(const FText& QuestText, float Duration)
@@ -232,5 +181,23 @@ void UInkLabHUDWidget::HideQuestNotification() const
     if (QuestNotificationContainer)
     {
         QuestNotificationContainer->SetVisibility(ESlateVisibility::Hidden);
+    }
+}
+
+void UInkLabHUDWidget::SetInputModeForInteraction() const
+{
+    if (APlayerController* PC = GetOwningPlayer())
+    {
+        PC->SetInputMode(FInputModeGameAndUI());
+        PC->SetShowMouseCursor(true);
+    }
+}
+
+void UInkLabHUDWidget::SetInputModeForGameplay() const
+{
+    if (APlayerController* PC = GetOwningPlayer())
+    {
+        PC->SetInputMode(FInputModeGameOnly());
+        PC->SetShowMouseCursor(false);
     }
 }

@@ -7,6 +7,7 @@
 #include "InkLabHUDWidget.generated.h"
 
 
+class UDialogueWidget;
 class UInventoryWidget;
 class UInventoryComponent;
 class UReticleWidget;
@@ -67,13 +68,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
     void ToggleInventoryPanel();
 
-    // Update the data of the inventory panel
-    UFUNCTION(BlueprintCallable, Category = "HUD|Inventory")
-    void UpdateInventoryData();
-
     // Shows a dialogue panel
     UFUNCTION(BlueprintCallable, Category = "HUD|Dialogue")
-    void ShowDialoguePanel(UWidget* DialogueWidget);
+    void ShowDialoguePanel();
 
     // Hides the dialogue panel
     UFUNCTION(BlueprintCallable, Category = "HUD|Dialogue")
@@ -92,9 +89,8 @@ protected:
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
     TObjectPtr<UInventoryWidget> InventoryWidget;
 
-    // Container for dialogue UI
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-    TObjectPtr<UOverlay> DialogueContainer;
+    TObjectPtr<UDialogueWidget> DialogueWidget;
 
     // Container for quest notifications
     UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
@@ -113,9 +109,6 @@ protected:
     TSubclassOf<UUserWidget> InventoryWidgetClass;
 
     UPROPERTY()
-    TObjectPtr<UUserWidget> CurrentDialogueWidget;
-
-    UPROPERTY()
     TObjectPtr<UUserWidget> CurrentQuestNotificationWidget;
 
     // Timer handle for auto-hiding quest notifications
@@ -124,4 +117,7 @@ protected:
     // Hide quest notification after timer expires
     UFUNCTION()
     void HideQuestNotification() const;
+
+    void SetInputModeForInteraction() const;
+    void SetInputModeForGameplay() const;
 };

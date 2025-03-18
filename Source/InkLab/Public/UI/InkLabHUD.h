@@ -64,7 +64,7 @@ public:
 
     // Shows a dialogue panel
     UFUNCTION(BlueprintCallable, Category = "HUD|Dialogue")
-    void ShowDialogue(UWidget* DialogueWidget);
+    void ShowDialogue();
 
     // Hides the dialogue panel
     UFUNCTION(BlueprintCallable, Category = "HUD|Dialogue")

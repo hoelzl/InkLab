@@ -106,11 +106,11 @@ void AInkLabHUD::SetReticleVisibility(bool bVisible)
     }
 }
 
-void AInkLabHUD::ShowDialogue(UWidget* DialogueWidget)
+void AInkLabHUD::ShowDialogue()
 {
     if (HUDWidget)
     {
-        HUDWidget->ShowDialoguePanel(DialogueWidget);
+        HUDWidget->ShowDialoguePanel();
     }
 }
 
