@@ -38,13 +38,6 @@ void UInkLabHUDWidget::NativeConstruct()
     }
 }
 
-void UInkLabHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
-{
-    Super::NativeTick(MyGeometry, InDeltaTime);
-
-    // Any per-frame HUD updates can go here
-}
-
 void UInkLabHUDWidget::ShowInteractionPrompt(const FText& ActionDescription)
 {
     if (ensure(InteractionPrompt))
@@ -86,7 +79,7 @@ void UInkLabHUDWidget::InitializeInventoryPanelData(UInventoryComponent* Invento
 }
 void UInkLabHUDWidget::RefreshInventoryData()
 {
-    if (ensure(InventoryWidget))
+    if (InventoryWidget)
     {
         InventoryWidget->RefreshInventory();
     }
@@ -147,7 +140,7 @@ void UInkLabHUDWidget::ToggleInventoryPanel()
 }
 void UInkLabHUDWidget::UpdateInventoryData()
 {
-    if (ensure(InventoryWidget))
+    if (InventoryWidget)
     {
         InventoryWidget->RefreshInventory();
     }

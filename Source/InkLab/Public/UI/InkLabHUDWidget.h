@@ -27,7 +27,6 @@ public:
     explicit UInkLabHUDWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
     virtual void NativeConstruct() override;
-    virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
     // Sets the interaction prompt text and makes it visible
     UFUNCTION(BlueprintCallable, Category = "HUD|Interaction")

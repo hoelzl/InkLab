@@ -27,6 +27,8 @@ class AInkLabCharacter : public ACharacter
 public:
     explicit AInkLabCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+    virtual void BeginPlay() override;
+
     /** Return the InteractionSource subobject */
     FORCEINLINE UInteractionSourceComponent* GetInteractionSource() const { return InteractionSource; }
     /** Return the Inventory subobject */
@@ -61,6 +63,9 @@ private:
     /** Inventory component */
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
     TObjectPtr<UInventoryComponent> InventoryComponent;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category="Inventory")
+    TObjectPtr<UDataTable> InitialLoadout;
 
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

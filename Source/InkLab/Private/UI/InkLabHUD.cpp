@@ -12,7 +12,7 @@
 
 AInkLabHUD::AInkLabHUD(const FObjectInitializer& ObjectInitializer) : Super{ObjectInitializer}
 {
-    static ConstructorHelpers::FClassFinder<UInkLabHUDWidget> HUDClassFinder{TEXT("/Game/UI/WBP_InkLabHUDWidget")};
+    static ConstructorHelpers::FClassFinder<UInkLabHUDWidget> HUDClassFinder{TEXT("/Game/UI/Widgets/HUD/WBP_InkLabHUDWidget")};
     if (ensure(HUDClassFinder.Succeeded()))
     {
         HUDWidgetClass = HUDClassFinder.Class;
